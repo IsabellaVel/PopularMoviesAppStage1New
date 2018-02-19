@@ -29,7 +29,7 @@ public class MovieDbJSONUtils {
     private static final String MD_VOTE_AVERAGE = "vote_average";
     private static final String MD_RELEASE_DATE = "release_date";
 
-    public static List<Movie> getMovieDetailsFromJson(Context context, String movieJsonString)
+    public static List<Movie> getMovieDetailsFromJson(String movieJsonString)
             throws JSONException {
 
 
