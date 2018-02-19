@@ -13,11 +13,13 @@ import com.example.isabe.popularmovies.utilities.NetworkUtils;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Movie>> {
 
     private MovieAdapter mMovieAdapter;
+    private List<Movie> movieList = null;
 
     public MainActivityFragment() {
     }
@@ -28,7 +30,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
 
-        mMovieAdapter = new MovieAdapter(getActivity(), new ArrayList<Movie>());
+        mMovieAdapter = new MovieAdapter(getActivity(), movieList);
 
         GridView gridView = (GridView) rootView.findViewById(R.id.movies_grid);
         gridView.setAdapter(mMovieAdapter);
