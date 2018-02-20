@@ -2,7 +2,10 @@ package com.example.isabe.popularmovies;
 
 import android.app.Fragment;
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.Loader;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,8 +21,9 @@ import java.util.List;
 
 public class MainActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Movie>> {
 
+    private static final int LOADER_ID = 11;
     private MovieAdapter mMovieAdapter;
-    private List<Movie> movieList = null;
+    private List<Movie> movieList = new ArrayList<>();
 
     public MainActivityFragment() {
     }
@@ -35,7 +39,10 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         GridView gridView = (GridView) rootView.findViewById(R.id.movies_grid);
         gridView.setAdapter(mMovieAdapter);
 
+        LoaderManager loaderManager = getLoaderManager();
+        loaderManager.initLoader(LOADER_ID, null, this);
         return rootView;
+
     }
 
     @Override

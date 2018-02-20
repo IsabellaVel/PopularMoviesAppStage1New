@@ -34,39 +34,41 @@ public class MovieDbJSONUtils {
 
 
         List<Movie> moviesList = new ArrayList<>();
-        try {
-            JSONObject baseMoviesJson = new JSONObject(movieJsonString);
-            JSONArray moviesJsonArray = baseMoviesJson.getJSONArray(MD_LIST);
+        if (movieJsonString != null) {
+            try {
+                JSONObject baseMoviesJson = new JSONObject(movieJsonString);
+                JSONArray moviesJsonArray = baseMoviesJson.getJSONArray(MD_LIST);
 
-            for (int i = 0; i < moviesJsonArray.length(); i++) {
-                JSONObject currentMovie = moviesJsonArray.getJSONObject(i);
-                String originalTitle = currentMovie.getString(MD_ORIGINAL_TITLE);
-                Double voteAverage = currentMovie.getDouble(MD_VOTE_AVERAGE);
-                String movieOverview = currentMovie.getString(MD_OVERVIEW);
-                String movieReleasedOn = currentMovie.getString(MD_RELEASE_DATE);
-                String moviePosterImageThumbnail = currentMovie.getString(MD_POSTER_IMAGE_THUMBNAIL);
+                for (int i = 0; i < moviesJsonArray.length(); i++) {
+                    JSONObject currentMovie = moviesJsonArray.getJSONObject(i);
+                    String originalTitle = currentMovie.optString(MD_ORIGINAL_TITLE);
+                    Double voteAverage = currentMovie.getDouble(MD_VOTE_AVERAGE);
+                    String movieOverview = currentMovie.optString(MD_OVERVIEW);
+                    String movieReleasedOn = currentMovie.optString(MD_RELEASE_DATE);
+                    String moviePosterImageThumbnail = currentMovie.getString(MD_POSTER_IMAGE_THUMBNAIL);
 
-                Movie movieItem = new Movie(originalTitle,
-                        movieReleasedOn, movieOverview, moviePosterImageThumbnail, voteAverage);
+                    Movie movieItem = new Movie(originalTitle,
+                            movieReleasedOn, movieOverview, moviePosterImageThumbnail, voteAverage);
 
-                moviesList.add(movieItem);
+                    moviesList.add(movieItem);
 
-                if (baseMoviesJson.has(MD_ORIGINAL_TITLE)) {
-                    int errorCode = baseMoviesJson.getInt(MD_ORIGINAL_TITLE);
+                    if (baseMoviesJson.has(MD_ORIGINAL_TITLE)) {
+                        int errorCode = baseMoviesJson.getInt(MD_ORIGINAL_TITLE);
 
-                    switch (errorCode) {
-                        case HttpURLConnection.HTTP_OK:
-                            break;
-                        case HttpURLConnection.HTTP_NOT_FOUND:
-                            return null;
-                        default:
-                            return null;
+                        switch (errorCode) {
+                            case HttpURLConnection.HTTP_OK:
+                                break;
+                            case HttpURLConnection.HTTP_NOT_FOUND:
+                                return null;
+                            default:
+                                return null;
+                        }
+
                     }
-
                 }
+            } catch (JSONException e) {
+                Log.e("MoviesUtils", "Problem parsing movies JSON results", e);
             }
-        } catch (JSONException e) {
-            Log.e("MoviesUtils", "Problem parsing movies JSON results", e);
         }
         return moviesList;
 
