@@ -23,9 +23,10 @@ import java.util.Scanner;
 public final class NetworkUtils {
     private static final String LOG_TAG = NetworkUtils.class.getSimpleName();
     public static final String DYNAMIC_MOVIE_DB_URL = "http://api.themoviedb.org/3/movie/popular?";
+    public static final String MOVIE_DB_URL_TOP_RATED = "http://api.themoviedb.org/3/movie/top_rated?";
 
-    public static final String MOVIE_BASE_URL = DYNAMIC_MOVIE_DB_URL;
-    private static final String MOVIE_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/";
+    public static String MOVIE_BASE_URL = "";
+    // private static final String MOVIE_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/";
 
     private static final int numMovies = 15;
     public static final String apiKey = BuildConfig.API_KEY;
@@ -36,7 +37,7 @@ public final class NetworkUtils {
     public final static String API_KEY_QUERY = "api_key";
     final static String MOVIES_PARAM = "cnt";
     final static String IMAGE_FILE_PATH_PARAM = "image";
-    final static String IMAGE_SIZE_PARAM = "size";
+    //final static String IMAGE_SIZE_PARAM = "size";
 
     private NetworkUtils() {
 
@@ -74,21 +75,23 @@ public final class NetworkUtils {
         return url;
     }
 
-    public static URL buildImageUrl(String imageQuery) {
-        Uri movieUri = Uri.parse(MOVIE_IMAGE_BASE_URL).buildUpon()
-                .appendQueryParameter(IMAGE_SIZE_PARAM, image_size)
-                //.appendQueryParameter(IMAGE_FILE_PATH_PARAM, file_path_image)
-                .build();
-
-        URL urlImage = null;
-        try {
-            urlImage = new URL(movieUri.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        Log.v(LOG_TAG, "Built URI " + urlImage);
-        return urlImage;
-    }
+    /**
+     * public static URL buildImageUrl(String imageQuery) {
+     * Uri movieUri = Uri.parse(MOVIE_IMAGE_BASE_URL).buildUpon()
+     * .appendQueryParameter(IMAGE_SIZE_PARAM, image_size)
+     * //.appendQueryParameter(IMAGE_FILE_PATH_PARAM, file_path_image)
+     * .build();
+     * <p>
+     * URL urlImage = null;
+     * try {
+     * urlImage = new URL(movieUri.toString());
+     * } catch (MalformedURLException e) {
+     * e.printStackTrace();
+     * }
+     * Log.v(LOG_TAG, "Built URI " + urlImage);
+     * return urlImage;
+     * }
+     **/
 
     public static String getResponseFromHttpUrl(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();

@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Popular Movies</string>
+    <string name="settings_menu_text">Settings</string>
+    <string name="settings_title">Movie Settings</string>
+    <string name="order_text">Order By</string>
+    <string name="order_by_key" translatable="false">order_by</string>
+
+    <string name="settings_order_by_most_popular_label">Most Popular</string>
+    <string name="settings_order_by_most_rated_label">Most Rated</string>
+
+    <string name="settings_order_by_most_rated_value">rating</string>
+    <string name="settings_order_by_most_popular_value">famous</string>
 </resources>
