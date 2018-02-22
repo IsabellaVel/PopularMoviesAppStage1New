@@ -1,5 +1,6 @@
 package com.example.isabe.popularmovies.utilities;
 
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
 
