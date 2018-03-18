@@ -3,10 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.isabe.popularmovies.MainActivityFragment">
+
+    <!--<item
+         android:id="@+id/action_settings"
+         android:icon="@drawable/settings_icon"
+         android:orderInCategory="1"
+         android:title="@string/settings_menu_text"
+         app:showAsAction="ifRoom" />
+ -->
     <item
-        android:id="@+id/action_settings"
-        android:icon="@drawable/settings_icon"
+        android:id="@+id/most_popular"
         android:orderInCategory="1"
-        android:title="@string/settings_menu_text"
-        app:showAsAction="ifRoom" />
+        android:title="@string/settings_order_by_most_popular_label"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/top_rated"
+        android:orderInCategory="1"
+        android:title="@string/settings_order_by_most_rated_label"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/favorites"
+        android:orderInCategory="1"
+        android:title="Favorites"
+        app:showAsAction="never"/>
 </menu>

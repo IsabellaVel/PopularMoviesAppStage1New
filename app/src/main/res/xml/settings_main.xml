@@ -7,6 +7,7 @@
         android:entries="@array/settings_order_by_labels"
         android:entryValues="@array/settings_order_by_values"
         android:key="orderBy"
-        android:title="@string/order_text" />
+        android:title="@string/order_text"
+        android:summary="%s"/>
 
 </PreferenceScreen>

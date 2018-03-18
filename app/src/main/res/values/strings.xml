@@ -10,4 +10,15 @@
 
     <string name="settings_order_by_most_rated_value">rating</string>
     <string name="settings_order_by_most_popular_value">famous</string>
+    <string name="log_top_rated_settings">Top rated link chosen from settings.</string>
+    <string name="log_top_rated_menu">Top rated link chosen.</string>
+    <string name="original_title">Original Title</string>
+    <string name="movie_summary">Movie Summary</string>
+    <string name="vote_string">5.5</string>
+    <string name="release_date">Release Date</string>
+    <string name="image_path_string">Movie Image Path</string>
+    <string name="string_date_release">Released On: </string>
+    <string name="votePercent">out of 10</string>
+    <string name="date_log">Release date added to movie.</string>
+    <string name="content_authority">com.example.isabe.popularmovies</string>
 </resources>

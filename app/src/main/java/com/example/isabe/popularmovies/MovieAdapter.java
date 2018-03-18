@@ -2,8 +2,7 @@ package com.example.isabe.popularmovies;
 
 import android.app.Activity;
 import android.content.Context;
-import android.net.Uri;
-import android.provider.ContactsContract;
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,29 +11,27 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
-import com.example.isabe.popularmovies.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
  * Created by isabe on 2/17/2018.
  */
 
-public class MovieAdapter extends ArrayAdapter<Movie> {
+class MovieAdapter extends ArrayAdapter<Movie> {
     private static final String LOG_TAG = MovieAdapter.class.getSimpleName();
-    private Context mContext;
+    private final Context mContext;
+    private Cursor mCursor;
 
     public MovieAdapter(@NonNull Activity context, List<Movie> movieItems) {
         super(context, 0, movieItems);
         mContext = context;
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         View gridViewItems = convertView;
         if (gridViewItems == null) {
             gridViewItems = LayoutInflater.from(getContext()).inflate(
@@ -42,10 +39,12 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
 
         }
         Movie movieItem = getItem(position);
-        ImageView imageViewMovie = (ImageView) gridViewItems.findViewById(R.id.movie_image);
+        ImageView imageViewMovie = gridViewItems.findViewById(R.id.movie_image);
+        assert movieItem != null;
+        assert movieItem != null;
         String moviePosterUniquePath = movieItem.getmImageThumbnail();
         String moviePosterFullPath = "https://image.tmdb.org/t/p/w185";
-        moviePosterFullPath = moviePosterFullPath+moviePosterUniquePath;
+        moviePosterFullPath = moviePosterFullPath + moviePosterUniquePath;
 
         Log.e(LOG_TAG, "Context" + mContext);
 
@@ -54,6 +53,14 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
                 .into(imageViewMovie);
 
         return gridViewItems;
+    }
+
+    public void swapCursor(Cursor newCursor) {
+        if (mCursor != null) mCursor.close();
+        mCursor = newCursor;
+        if (newCursor != null) {
+            this.notifyDataSetChanged();
+        }
     }
 
 }

@@ -1,8 +1,5 @@
 package com.example.isabe.popularmovies.utilities;
 
-import android.content.Context;
-import android.content.SearchRecentSuggestionsProvider;
-import android.content.SyncStats;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -14,21 +11,22 @@ import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.SimpleTimeZone;
 
 /**
  * Created by isabe on 2/17/2018.
  */
 
-public class MovieDbJSONUtils {
+class MovieDbJSONUtils {
     private static final String MD_LIST = "results";
     private static final String MD_ORIGINAL_TITLE = "original_title";
     private static final String MD_POSTER_IMAGE_THUMBNAIL = "poster_path";
     private static final String MD_OVERVIEW = "overview";
     private static final String MD_VOTE_AVERAGE = "vote_average";
     private static final String MD_RELEASE_DATE = "release_date";
+    private static final String MD_MOVIE_ID = "id";
+    private static final String MD_TRAILER = "video";
+    private static final String MD_BACKDROP_PATH = "backdrop_path";
 
     public static List<Movie> getMovieDetailsFromJson(String movieJsonString)
             throws JSONException {
@@ -45,13 +43,17 @@ public class MovieDbJSONUtils {
             for (int i = 0; i < moviesJsonArray.length(); i++) {
                 JSONObject currentMovie = moviesJsonArray.getJSONObject(i);
                 String originalTitle = currentMovie.optString(MD_ORIGINAL_TITLE);
-                Double voteAverage = currentMovie.getDouble(MD_VOTE_AVERAGE);
+                String voteAverage = currentMovie.getString(MD_VOTE_AVERAGE);
                 String movieOverview = currentMovie.optString(MD_OVERVIEW);
                 String movieReleasedOn = currentMovie.optString(MD_RELEASE_DATE);
                 String moviePosterImageThumbnail = currentMovie.getString(MD_POSTER_IMAGE_THUMBNAIL);
+                String movieBackdropPath = currentMovie.getString(MD_BACKDROP_PATH);
+                String movieId = currentMovie.getString(MD_MOVIE_ID);
+                Boolean movieTrailer = currentMovie.getBoolean(MD_TRAILER);
 
                 Movie movieItem = new Movie(originalTitle,
-                        movieReleasedOn, movieOverview, moviePosterImageThumbnail, voteAverage);
+                        movieReleasedOn, movieOverview, moviePosterImageThumbnail, voteAverage,
+                        movieBackdropPath, movieTrailer, movieId);
 
                 moviesList.add(movieItem);
 

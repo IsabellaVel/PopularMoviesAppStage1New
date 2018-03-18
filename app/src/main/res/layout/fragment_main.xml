@@ -6,9 +6,10 @@
     android:layout_height="match_parent"
     android:columnWidth="150dp"
     android:numColumns="auto_fit"
-    android:verticalSpacing="0dp"
-    android:horizontalSpacing="0dp"
+    android:verticalSpacing="2dp"
+    android:horizontalSpacing="2dp"
+    android:background="@color/colorSpacing"
     android:stretchMode="columnWidth"
     tools:context=".MainActivityFragment"
     android:id="@+id/movies_grid">
-</GridView>
+    </GridView>
