@@ -41,7 +41,6 @@ class MovieAdapter extends ArrayAdapter<Movie> {
         Movie movieItem = getItem(position);
         ImageView imageViewMovie = gridViewItems.findViewById(R.id.movie_image);
         assert movieItem != null;
-        assert movieItem != null;
         String moviePosterUniquePath = movieItem.getmImageThumbnail();
         String moviePosterFullPath = "https://image.tmdb.org/t/p/w185";
         moviePosterFullPath = moviePosterFullPath + moviePosterUniquePath;

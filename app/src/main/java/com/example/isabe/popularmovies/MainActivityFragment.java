@@ -1,13 +1,9 @@
 package com.example.isabe.popularmovies;
 
-import android.app.Fragment;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -28,12 +24,10 @@ import com.example.isabe.popularmovies.utilities.NetworkUtils;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.example.isabe.popularmovies.utilities.NetworkUtils.API_KEY_QUERY;
 import static com.example.isabe.popularmovies.utilities.NetworkUtils.apiKey;
-import static com.example.isabe.popularmovies.utilities.NetworkUtils.createUrl;
 
 public class MainActivityFragment extends Fragment {
 
@@ -59,16 +53,16 @@ public class MainActivityFragment extends Fragment {
             MovieContract.MovieEntry.DB_VOTE_ABVERAGE
     };
 
-    private android.support.v4.app.LoaderManager.LoaderCallbacks<List<Movie>> mListMovieLoader =
+    private android.support.v4.app.LoaderManager.LoaderCallbacks mListMovieLoader =
             new LoaderManager.LoaderCallbacks<List<Movie>>() {
-                @RequiresApi(api = Build.VERSION_CODES.M)
+
                 @Override
                 public Loader<List<Movie>> onCreateLoader(int i, Bundle bundle) {
                     Uri movieUri = Uri.parse(movieDisplayStyleLink).buildUpon()
                             .appendQueryParameter(API_KEY_QUERY, apiKey)
                             .build();
                     URL movieUrl = NetworkUtils.createUrl((movieUri).toString());
-                    return new Loader<List<Movie>>(getContext());
+                    return new MovieLoader(getActivity(), (movieUrl).toString());
                 }
 
                 @Override
@@ -76,6 +70,7 @@ public class MainActivityFragment extends Fragment {
                     mMovieAdapter.clear();
                     if (movieList != null && !movieList.isEmpty()) {
                         mMovieAdapter.addAll(movieList);
+                        Log.e(LOG_TAG, "Successful LoadFinished.");
                     }
                 }
 
@@ -142,11 +137,14 @@ public class MainActivityFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int item, long l) {
                 Movie thisMovie = mMovieAdapter.getItem(item);
                 assert thisMovie != null;
+                assert thisMovie != null;
                 String originalTitle = thisMovie.getmOriginalTitle();
                 String releaseDate = thisMovie.getmReleaseDate();
                 String voteAverage = thisMovie.getmVoteAverage();
                 String moviePoster = thisMovie.getmImageThumbnail();
+                String movieBackdrop = thisMovie.getmBackdropPath();
                 String movieSynopsis = thisMovie.getmOverviewMovie();
+                int movieID = thisMovie.getmMovieTMDBId();
 
                 Intent showDetailsIntent = new Intent(getActivity(), DetailsActivity.class);
 
@@ -156,8 +154,11 @@ public class MainActivityFragment extends Fragment {
                 bundleExtra.putString(getString(R.string.string_date_release), releaseDate);
                 bundleExtra.putString(getString(R.string.vote_string), voteAverage);
                 bundleExtra.putString(getString(R.string.movie_summary), movieSynopsis);
+                bundleExtra.putInt(getString(R.string.movie_string_id), movieID);
+                bundleExtra.putString(getString(R.string.backdrop_string_path), movieBackdrop);
                 showDetailsIntent.putExtras(bundleExtra);
                 startActivity(showDetailsIntent);
+
             }
         });
         android.support.v4.app.LoaderManager loaderManager = getLoaderManager();
@@ -187,9 +188,10 @@ public class MainActivityFragment extends Fragment {
                 movieDisplayStyleLink = DEFAULT_POPULAR_MOVIE_DB_URL;
                 getLoaderManager().restartLoader(LOADER_ID, null, mListMovieLoader);
             case R.id.favorites:
-                getLoaderManager().restartLoader(LOADER_CURSOR_ID, null, mLoaderCursor);
+                getLoaderManager().initLoader(LOADER_CURSOR_ID, null, mLoaderCursor);
 
         }
         return super.onOptionsItemSelected(item);
     }
 }
+

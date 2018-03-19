@@ -21,6 +21,7 @@
         </activity>
         <activity android:name=".SettingsActivity" />
         <activity android:name=".DetailsActivity" />
+        <activity android:name=".FavoriteDetailActivity"/>
 
         <provider
             android:name=".data.MoviesProvider"

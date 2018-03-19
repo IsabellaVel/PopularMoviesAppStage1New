@@ -15,10 +15,10 @@ public class Movie implements Parcelable {
     private final String mImageThumbnail;
     private String mBackdropPath;
     private Boolean mTrailerPath;
-    private final String mMovieId;
+    private final int mMovieTMDBId;
 
     public Movie(String originalTitle, String releasedOnDate, String overview, String imageThumbnail, String averageVote,
-                 String backdropPath, Boolean movieTrailer, String movieId) {
+                 String backdropPath, Boolean movieTrailer, int movieId) {
         this.mReleaseDate = releasedOnDate;
         this.mOriginalTitle = originalTitle;
         this.mVoteAverage = averageVote;
@@ -26,15 +26,15 @@ public class Movie implements Parcelable {
         this.mImageThumbnail = imageThumbnail;
         this.mBackdropPath = backdropPath;
         this.mTrailerPath = movieTrailer;
-        this.mMovieId = movieId;
+        this.mMovieTMDBId = movieId;
     }
 
-    public Movie(String imageThumbnail, String overview, String title, String movieId, String vote) {
+    public Movie(String imageThumbnail, String overview, String title, int movieId, String vote) {
         this.mOriginalTitle = title;
         this.mVoteAverage = vote;
         this.mOverviewMovie = overview;
         this.mImageThumbnail = imageThumbnail;
-        this.mMovieId = movieId;
+        this.mMovieTMDBId = movieId;
     }
 
     private Movie(Parcel in) {
@@ -45,7 +45,7 @@ public class Movie implements Parcelable {
         mVoteAverage = in.readString();
         mBackdropPath = in.readString();
         mTrailerPath = in.readByte() !=0;
-        mMovieId = in.readString();
+        mMovieTMDBId = in.readInt();
 
     }
 
@@ -58,7 +58,7 @@ public class Movie implements Parcelable {
         return mOriginalTitle + "--" + mReleaseDate + "--"
                 + mVoteAverage + "--" + mOverviewMovie + "--" + mImageThumbnail + "--" + mBackdropPath
                 + "--" + mTrailerPath
-                + "--" + mMovieId;
+                + "--" + mMovieTMDBId;
     }
 
     @Override
@@ -70,7 +70,7 @@ public class Movie implements Parcelable {
         parcel.writeString(mImageThumbnail);
         parcel.writeString(mBackdropPath);
         parcel.writeByte((byte) (mTrailerPath ? 1 : 0));
-        parcel.writeString(mMovieId);
+        parcel.writeInt(mMovieTMDBId);
     }
 
     public final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
@@ -113,7 +113,7 @@ public class Movie implements Parcelable {
         return mTrailerPath;
     }
 
-    public String getmMovieId() {
-        return mMovieId;
+    public int getmMovieTMDBId() {
+        return mMovieTMDBId;
     }
 }

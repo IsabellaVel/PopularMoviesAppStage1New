@@ -21,4 +21,7 @@
     <string name="votePercent">out of 10</string>
     <string name="date_log">Release date added to movie.</string>
     <string name="content_authority">com.example.isabe.popularmovies</string>
+    <string name="movie_string_id">Movie ID</string>
+    <string name="backdrop_string_path">Backdrop Image Path</string>
+    <string name="favorites_toast">Item added to favorites.</string>
 </resources>

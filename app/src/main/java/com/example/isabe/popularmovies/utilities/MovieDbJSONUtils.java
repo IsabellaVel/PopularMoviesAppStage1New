@@ -48,12 +48,12 @@ class MovieDbJSONUtils {
                 String movieReleasedOn = currentMovie.optString(MD_RELEASE_DATE);
                 String moviePosterImageThumbnail = currentMovie.getString(MD_POSTER_IMAGE_THUMBNAIL);
                 String movieBackdropPath = currentMovie.getString(MD_BACKDROP_PATH);
-                String movieId = currentMovie.getString(MD_MOVIE_ID);
+                int movieTMDBId = currentMovie.getInt(MD_MOVIE_ID);
                 Boolean movieTrailer = currentMovie.getBoolean(MD_TRAILER);
 
                 Movie movieItem = new Movie(originalTitle,
                         movieReleasedOn, movieOverview, moviePosterImageThumbnail, voteAverage,
-                        movieBackdropPath, movieTrailer, movieId);
+                        movieBackdropPath, movieTrailer, movieTMDBId);
 
                 moviesList.add(movieItem);
 
