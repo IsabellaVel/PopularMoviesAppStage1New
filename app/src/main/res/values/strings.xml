@@ -24,4 +24,5 @@
     <string name="movie_string_id">Movie ID</string>
     <string name="backdrop_string_path">Backdrop Image Path</string>
     <string name="favorites_toast">Item added to favorites.</string>
+    <string name="favorites_chosen">Favorites chosen.</string>
 </resources>

@@ -12,6 +12,7 @@ import android.provider.BaseColumns;
 public class MovieContract {
     public static final String CONTENT_AUTHORITY = "com.example.isabe.popularmovies";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+    public static final String PATH_MOVIES = "movies";
 
     public static final class MovieEntry implements BaseColumns {
         public static final String TABLE_MOVIES = "movies";
@@ -24,9 +25,9 @@ public class MovieContract {
         public static final String DB_BACKDROP_PATH = "backdrop_path";
         public static final String DB_SYNOPSIS = "overview";
         public static final String DB_RELEASE_DATE = "release_date";
-        public static final String DB_VOTE_ABVERAGE = "vote_average";
+        public static final String DB_VOTE_AVERAGE = "vote_average";
         public static final Uri CONTENT_URI = BASE_CONTENT_URI
-                .buildUpon().appendPath(TABLE_MOVIES).build();
+                .buildUpon().appendPath(PATH_MOVIES).build();
 
         // create cursor of base type directory for multiple entries
         public static final String CONTENT_MOVIES_DIR_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/"

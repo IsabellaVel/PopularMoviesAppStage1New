@@ -1,5 +1,6 @@
 package com.example.isabe.popularmovies;
 
+import android.annotation.TargetApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.example.isabe.popularmovies.data.MovieContract;
 import com.example.isabe.popularmovies.utilities.NetworkUtils;
@@ -41,17 +43,20 @@ public class MainActivityFragment extends Fragment {
     public static String movieDisplayStyleLink = DEFAULT_POPULAR_MOVIE_DB_URL;
     private MovieAdapter mMovieAdapter;
     private List<Movie> movieList = new ArrayList<>();
+    Cursor mCursor;
 
-    public static final String[] FAVORITES_PROJECTION = {
+    public String[] FAVORITES_PROJECTION = {
             MovieContract.MovieEntry._ID,
             MovieContract.MovieEntry.DB_MOVIE_ID,
             MovieContract.MovieEntry.DB_TITLE,
-            MovieContract.MovieEntry.DB_POSTER_PATH,
             MovieContract.MovieEntry.DB_BACKDROP_PATH,
             MovieContract.MovieEntry.DB_SYNOPSIS,
             MovieContract.MovieEntry.DB_RELEASE_DATE,
-            MovieContract.MovieEntry.DB_VOTE_ABVERAGE
+            MovieContract.MovieEntry.DB_VOTE_AVERAGE
     };
+
+    public GridView gridView;
+    public View rootView;
 
     private android.support.v4.app.LoaderManager.LoaderCallbacks mListMovieLoader =
             new LoaderManager.LoaderCallbacks<List<Movie>>() {
@@ -125,12 +130,12 @@ public class MainActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
 
         mMovieAdapter = new MovieAdapter(getActivity(), movieList);
 
-        GridView gridView = rootView.findViewById(R.id.movies_grid);
+        gridView = rootView.findViewById(R.id.movies_grid);
         gridView.setAdapter(mMovieAdapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -187,10 +192,12 @@ public class MainActivityFragment extends Fragment {
             case R.id.most_popular:
                 movieDisplayStyleLink = DEFAULT_POPULAR_MOVIE_DB_URL;
                 getLoaderManager().restartLoader(LOADER_ID, null, mListMovieLoader);
-            case R.id.favorites:
-                getLoaderManager().initLoader(LOADER_CURSOR_ID, null, mLoaderCursor);
-
-        }
+            case R.id.favorites_id:
+                getLoaderManager().restartLoader(LOADER_CURSOR_ID, null, mLoaderCursor);
+                mMovieAdapter = new MovieAdapter(getActivity(), movieList);
+                gridView.setAdapter(mMovieAdapter);
+                Log.e(LOG_TAG, getString(R.string.favorites_chosen));
+             }
         return super.onOptionsItemSelected(item);
     }
 }

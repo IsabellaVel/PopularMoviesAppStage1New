@@ -22,7 +22,7 @@
         android:title="@string/settings_order_by_most_rated_label"
         app:showAsAction="never" />
     <item
-        android:id="@+id/favorites"
+        android:id="@+id/favorites_id"
         android:orderInCategory="1"
         android:title="Favorites"
         app:showAsAction="never"/>

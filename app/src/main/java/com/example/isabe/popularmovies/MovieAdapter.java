@@ -62,4 +62,8 @@ class MovieAdapter extends ArrayAdapter<Movie> {
         }
     }
 
+    public Cursor getCursor(){
+        return mCursor;
+    }
+
 }

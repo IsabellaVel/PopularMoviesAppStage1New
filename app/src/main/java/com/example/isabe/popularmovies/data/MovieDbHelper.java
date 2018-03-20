@@ -14,10 +14,10 @@ public class MovieDbHelper extends SQLiteOpenHelper {
 
     //name & version
     private static final String DATABASE_NAME = "movies.db";
-    private static final int DATABSE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public MovieDbHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABSE_VERSION);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
@@ -31,8 +31,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 MovieContract.MovieEntry.DB_BACKDROP_PATH + " TEXT NOT NULL, " +
                 MovieContract.MovieEntry.DB_SYNOPSIS + " TEXT NOT NULL, " +
                 MovieContract.MovieEntry.DB_RELEASE_DATE + " TEXT NOT NULL, " +
-                MovieContract.MovieEntry.DB_VOTE_ABVERAGE + " TEXT NOT NULL, " +
-                " UNIQUE (" + MovieContract.MovieEntry.DB_MOVIE_ID + ") ON CONFLICT REPLACE);";
+                MovieContract.MovieEntry.DB_VOTE_AVERAGE + " TEXT NOT NULL );";
         sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_TABLE);
     }
 

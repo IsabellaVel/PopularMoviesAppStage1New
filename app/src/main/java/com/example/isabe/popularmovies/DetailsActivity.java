@@ -1,8 +1,8 @@
 package com.example.isabe.popularmovies;
 
-import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -14,6 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.isabe.popularmovies.data.MovieContract;
+import com.example.isabe.popularmovies.data.MovieContract.MovieEntry;
+import com.example.isabe.popularmovies.data.MovieDbHelper;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
@@ -27,12 +29,19 @@ import java.util.Date;
 public class DetailsActivity extends AppCompatActivity {
     private static final String LOG_TAG = DetailsActivity.class.getSimpleName();
     static Movie mMovieDetails;
-    int movieIdText;
+    int movieIdFromTMDB;
     String originalTitle;
     String releaseDate;
     String imagePath;
     String voteAverage;
     String backdropImage;
+    String movieSynopsis;
+    public Uri mNewMovieAddedToDB;
+
+    private MovieDbHelper movieDbHelper;
+    SQLiteDatabase db;
+    Cursor mCursor;
+    TextView displayView;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,15 +56,15 @@ public class DetailsActivity extends AppCompatActivity {
 
         Bundle bundleGetExtras = getIntent().getExtras();
         if (bundleGetExtras != null) {
-            String originalTitle = bundleGetExtras.getString(getString(R.string.original_title));
-            String releaseDate = bundleGetExtras.getString(getString(R.string.string_date_release));
-            String imagePath = bundleGetExtras.getString(getString(R.string.image_path_string));
-            String movieSynopsis = bundleGetExtras.getString(getString(R.string.movie_summary));
-            String voteAverage = bundleGetExtras.getString(getString(R.string.vote_string));
+            originalTitle = bundleGetExtras.getString(getString(R.string.original_title));
+            releaseDate = bundleGetExtras.getString(getString(R.string.string_date_release));
+            imagePath = bundleGetExtras.getString(getString(R.string.image_path_string));
+            movieSynopsis = bundleGetExtras.getString(getString(R.string.movie_summary));
+            voteAverage = bundleGetExtras.getString(getString(R.string.vote_string));
             voteAverage = voteAverage + " " + getString(R.string.votePercent);
-            movieIdText = bundleGetExtras.getInt(getString(R.string.movie_string_id));
+            movieIdFromTMDB = bundleGetExtras.getInt(getString(R.string.movie_string_id));
             String fullImagePosterLink = "https://image.tmdb.org/t/p/w185" + imagePath;
-            String backdropImage = bundleGetExtras.getString(getString(R.string.backdrop_string_path));
+            backdropImage = bundleGetExtras.getString(getString(R.string.backdrop_string_path));
             String fullImageBackdropPath = "https://image.tmdb.org/t/p/w185" + backdropImage;
 
             Picasso.with(this).load(fullImageBackdropPath).into(mMoviePoster);
@@ -71,29 +80,44 @@ public class DetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 insertData();
-            }
-
-            public void insertData() {
-                int id = 0;
-
-                ContentValues movieValues = new ContentValues();
-                movieValues.put(MovieContract.MovieEntry.DB_MOVIE_ID, movieIdText);
-                movieValues.put(MovieContract.MovieEntry.DB_TITLE, originalTitle);
-                movieValues.put(MovieContract.MovieEntry.DB_BACKDROP_PATH, backdropImage);
-                movieValues.put(MovieContract.MovieEntry.DB_POSTER_PATH, imagePath);
-                movieValues.put(MovieContract.MovieEntry.DB_RELEASE_DATE, releaseDate);
-                movieValues.put(MovieContract.MovieEntry.DB_VOTE_ABVERAGE, voteAverage);
-                Toast.makeText(getApplicationContext(), R.string.favorites_toast, Toast.LENGTH_LONG).show();
-
-                Intent startFavoriteActivity = new Intent(DetailsActivity.this, FavoriteDetailActivity.class);
-                Uri movieUri = ContentUris.withAppendedId(MovieContract.MovieEntry.CONTENT_URI, id);
-
-                startFavoriteActivity.putExtra("MOVIE_DETAILS", mMovieDetails);
-                startFavoriteActivity.putExtra("MOVIE_URI", movieUri.toString());
-                startActivity(startFavoriteActivity);
-
+                readDataCheckMethod();
             }
         });
+    }
+
+    public void insertData() {
+
+        ContentValues movieValues = new ContentValues();
+        movieValues.put(MovieEntry.DB_MOVIE_ID, movieIdFromTMDB);
+        movieValues.put(MovieEntry.DB_TITLE, originalTitle);
+        movieValues.put(MovieEntry.DB_POSTER_PATH, imagePath);
+        movieValues.put(MovieEntry.DB_BACKDROP_PATH, backdropImage);
+        movieValues.put(MovieEntry.DB_SYNOPSIS, movieSynopsis);
+        movieValues.put(MovieEntry.DB_RELEASE_DATE, releaseDate);
+        movieValues.put(MovieEntry.DB_VOTE_AVERAGE, voteAverage);
+
+        getContentResolver()
+                .insert(MovieEntry.CONTENT_URI, movieValues);
+        Toast.makeText(getApplicationContext(), "Added " + movieValues.size() + "items.", Toast.LENGTH_LONG).show();
+
+    }
+
+    private Cursor readDataCheckMethod() {
+        db = movieDbHelper.getReadableDatabase();
+        String[] FAVORITES_PROJECTION = {
+                MovieContract.MovieEntry._ID,
+                MovieContract.MovieEntry.DB_MOVIE_ID,
+                MovieContract.MovieEntry.DB_TITLE,
+                MovieContract.MovieEntry.DB_BACKDROP_PATH,
+                MovieContract.MovieEntry.DB_SYNOPSIS,
+                MovieContract.MovieEntry.DB_RELEASE_DATE,
+                MovieContract.MovieEntry.DB_VOTE_AVERAGE
+        };
+        mCursor = db.query(MovieEntry.TABLE_MOVIES, FAVORITES_PROJECTION,
+                null, null, null, null, null);
+
+        displayView.setText("The movies DB contains " + mCursor.getCount() + " items.\n\n");
+        return mCursor;
     }
 
     private String convertDateFormat(String dateString) {
