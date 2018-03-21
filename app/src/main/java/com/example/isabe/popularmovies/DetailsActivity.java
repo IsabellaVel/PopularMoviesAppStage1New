@@ -28,7 +28,7 @@ import java.util.Date;
 
 public class DetailsActivity extends AppCompatActivity {
     private static final String LOG_TAG = DetailsActivity.class.getSimpleName();
-    static Movie mMovieDetails;
+    private static Movie mMovieDetails;
     int movieIdFromTMDB;
     String originalTitle;
     String releaseDate;
@@ -38,7 +38,7 @@ public class DetailsActivity extends AppCompatActivity {
     String movieSynopsis;
     public Uri mNewMovieAddedToDB;
 
-    private MovieDbHelper movieDbHelper;
+    private MovieDbHelper movieDbHelper = new MovieDbHelper(this);
     SQLiteDatabase db;
     Cursor mCursor;
     TextView displayView;
@@ -80,7 +80,7 @@ public class DetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 insertData();
-                readDataCheckMethod();
+                //readDataCheckMethod();
             }
         });
     }
@@ -102,23 +102,6 @@ public class DetailsActivity extends AppCompatActivity {
 
     }
 
-    private Cursor readDataCheckMethod() {
-        db = movieDbHelper.getReadableDatabase();
-        String[] FAVORITES_PROJECTION = {
-                MovieContract.MovieEntry._ID,
-                MovieContract.MovieEntry.DB_MOVIE_ID,
-                MovieContract.MovieEntry.DB_TITLE,
-                MovieContract.MovieEntry.DB_BACKDROP_PATH,
-                MovieContract.MovieEntry.DB_SYNOPSIS,
-                MovieContract.MovieEntry.DB_RELEASE_DATE,
-                MovieContract.MovieEntry.DB_VOTE_AVERAGE
-        };
-        mCursor = db.query(MovieEntry.TABLE_MOVIES, FAVORITES_PROJECTION,
-                null, null, null, null, null);
-
-        displayView.setText("The movies DB contains " + mCursor.getCount() + " items.\n\n");
-        return mCursor;
-    }
 
     private String convertDateFormat(String dateString) {
         if (dateString != null && !dateString.isEmpty()) {

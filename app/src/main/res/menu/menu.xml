@@ -24,6 +24,11 @@
     <item
         android:id="@+id/favorites_id"
         android:orderInCategory="1"
-        android:title="Favorites"
-        app:showAsAction="never"/>
+        android:title="@string/menu_favorites"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/delete_all"
+        android:orderInCategory="1"
+        android:title="@string/menu_delete_all"
+        app:showAsAction="never" />
 </menu>

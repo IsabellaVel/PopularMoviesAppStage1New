@@ -19,11 +19,12 @@ import android.support.annotation.Nullable;
 public class MoviesProvider extends ContentProvider {
     private static final String LOG_TAG = MoviesProvider.class.getSimpleName();
     private static final UriMatcher sUriMatcher = buildUriMatcher();
-    private MovieDbHelper mOpenMoviesHelper;
+    public MovieDbHelper mOpenMoviesHelper;
 
     // Codes for the UriMatcher //////
     private static final int MOVIE_MATCHER = 100;
     private static final int MOVIE_WITH_ID = 200;
+    public Cursor retCursor;
 
     private static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);

@@ -1,6 +1,5 @@
 package com.example.isabe.popularmovies;
 
-import android.annotation.TargetApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -22,6 +21,8 @@ import android.widget.GridView;
 import android.widget.Toast;
 
 import com.example.isabe.popularmovies.data.MovieContract;
+import com.example.isabe.popularmovies.data.MovieDbHelper;
+import com.example.isabe.popularmovies.data.MoviesProvider;
 import com.example.isabe.popularmovies.utilities.NetworkUtils;
 
 import java.net.URL;
@@ -43,6 +44,7 @@ public class MainActivityFragment extends Fragment {
     public static String movieDisplayStyleLink = DEFAULT_POPULAR_MOVIE_DB_URL;
     private MovieAdapter mMovieAdapter;
     private List<Movie> movieList = new ArrayList<>();
+    private Movie mMovie;
     Cursor mCursor;
 
     public String[] FAVORITES_PROJECTION = {
@@ -99,7 +101,39 @@ public class MainActivityFragment extends Fragment {
 
                 @Override
                 public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+                    mCursor = cursor;
                     mMovieAdapter.swapCursor(cursor);
+                    MovieDbHelper mOpenMoviesHelper = new MovieDbHelper(getActivity());
+
+                    mCursor = mOpenMoviesHelper.getReadableDatabase().query(MovieContract.MovieEntry.TABLE_MOVIES,
+                            FAVORITES_PROJECTION, null, null, null, null, null);
+                    int primaryKeyColumnIndex = mCursor.getColumnIndex(MovieContract.MovieEntry._ID);
+                    int idColumnIndex = mCursor.getColumnIndex(MovieContract.MovieEntry.DB_MOVIE_ID);
+                    int titleColumnIndex = mCursor.getColumnIndex(MovieContract.MovieEntry.DB_TITLE);
+                    int posterColumnIndex = mCursor.getColumnIndex(MovieContract.MovieEntry.DB_POSTER_PATH);
+                    int backdropColumnIndex = mCursor.getColumnIndex(MovieContract.MovieEntry.DB_BACKDROP_PATH);
+                    int releasedDateColumnIndex = mCursor.getColumnIndex(MovieContract.MovieEntry.DB_RELEASE_DATE);
+                    int synopsisColumnIndex = mCursor.getColumnIndex(MovieContract.MovieEntry.DB_SYNOPSIS);
+                    int voteColumnIndex = mCursor.getColumnIndex(MovieContract.MovieEntry.DB_VOTE_AVERAGE);
+
+                    if (mCursor.getCount() > 0) {
+                        while (mCursor.moveToNext()) {
+                            int primaryKeyID = mCursor.getInt(primaryKeyColumnIndex);
+                            int currentID = mCursor.getInt(idColumnIndex);
+                            String currentTitle = mCursor.getString(titleColumnIndex);
+                            //String currentPosterPath = mCursor.getString(posterColumnIndex);
+                            String currentBackdropPath = mCursor.getString(backdropColumnIndex);
+                            //String currentReleaseDate = mCursor.getString(releasedDateColumnIndex);
+                            String currentSynopsis = mCursor.getString(synopsisColumnIndex);
+                            String currentVoteAverage = mCursor.getString(voteColumnIndex);
+
+                            mMovie = new Movie(currentBackdropPath,
+                                    currentSynopsis, currentTitle, currentID, currentVoteAverage);
+
+                            movieList.add(mMovie);
+                            mMovieAdapter.addAll(movieList);
+                        }
+                    }
                 }
 
                 @Override
@@ -192,13 +226,22 @@ public class MainActivityFragment extends Fragment {
             case R.id.most_popular:
                 movieDisplayStyleLink = DEFAULT_POPULAR_MOVIE_DB_URL;
                 getLoaderManager().restartLoader(LOADER_ID, null, mListMovieLoader);
+
             case R.id.favorites_id:
                 getLoaderManager().restartLoader(LOADER_CURSOR_ID, null, mLoaderCursor);
-                mMovieAdapter = new MovieAdapter(getActivity(), movieList);
-                gridView.setAdapter(mMovieAdapter);
                 Log.e(LOG_TAG, getString(R.string.favorites_chosen));
-             }
+            case R.id.delete_all:
+               deleteData();
+        }
         return super.onOptionsItemSelected(item);
     }
+
+    public int deleteData() {
+        int numDeleted = getActivity().getContentResolver()
+                .delete(MovieContract.MovieEntry.CONTENT_URI, null, null);
+        Toast.makeText(getContext(), "Database deleted: " + numDeleted + " items.", Toast.LENGTH_LONG).show();
+        return numDeleted;
+    }
+
 }
 

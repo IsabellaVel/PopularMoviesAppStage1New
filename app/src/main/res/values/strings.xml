@@ -25,4 +25,6 @@
     <string name="backdrop_string_path">Backdrop Image Path</string>
     <string name="favorites_toast">Item added to favorites.</string>
     <string name="favorites_chosen">Favorites chosen.</string>
+    <string name="menu_favorites">Favorites</string>
+    <string name="menu_delete_all">Delete All</string>
 </resources>

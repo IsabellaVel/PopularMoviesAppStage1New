@@ -26,6 +26,7 @@ public class MovieContract {
         public static final String DB_SYNOPSIS = "overview";
         public static final String DB_RELEASE_DATE = "release_date";
         public static final String DB_VOTE_AVERAGE = "vote_average";
+
         public static final Uri CONTENT_URI = BASE_CONTENT_URI
                 .buildUpon().appendPath(PATH_MOVIES).build();
 
