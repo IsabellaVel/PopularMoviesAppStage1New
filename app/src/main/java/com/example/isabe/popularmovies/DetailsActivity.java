@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -46,6 +47,11 @@ public class DetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.details_movie);
+
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar !=null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         mMovieDetails = getIntent().getExtras().getParcelable("MOVIE_DETAILS");
         ImageView mMoviePoster = findViewById(R.id.detail_image);

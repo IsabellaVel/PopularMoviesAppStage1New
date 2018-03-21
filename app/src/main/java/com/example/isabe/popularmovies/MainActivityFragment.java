@@ -102,6 +102,7 @@ public class MainActivityFragment extends Fragment {
                 @Override
                 public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
                     mCursor = cursor;
+                    mMovieAdapter.clear();
                     mMovieAdapter.swapCursor(cursor);
                     MovieDbHelper mOpenMoviesHelper = new MovieDbHelper(getActivity());
 
@@ -228,10 +229,12 @@ public class MainActivityFragment extends Fragment {
                 getLoaderManager().restartLoader(LOADER_ID, null, mListMovieLoader);
 
             case R.id.favorites_id:
-                getLoaderManager().restartLoader(LOADER_CURSOR_ID, null, mLoaderCursor);
+                getLoaderManager().destroyLoader(LOADER_ID);
+                getActivity().getSupportLoaderManager().initLoader(LOADER_CURSOR_ID, null, mLoaderCursor);
                 Log.e(LOG_TAG, getString(R.string.favorites_chosen));
+
             case R.id.delete_all:
-               deleteData();
+                //deleteData();
         }
         return super.onOptionsItemSelected(item);
     }
