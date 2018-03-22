@@ -45,7 +45,6 @@ public class MainActivityFragment extends Fragment {
     private MovieAdapter mMovieAdapter;
     private List<Movie> movieList = new ArrayList<>();
     private Movie mMovie;
-    Cursor mCursor;
 
     public String[] FAVORITES_PROJECTION = {
             MovieContract.MovieEntry._ID,
@@ -101,38 +100,37 @@ public class MainActivityFragment extends Fragment {
 
                 @Override
                 public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-                    mCursor = cursor;
                     mMovieAdapter.clear();
                     mMovieAdapter.swapCursor(cursor);
                     MovieDbHelper mOpenMoviesHelper = new MovieDbHelper(getActivity());
 
-                    mCursor = mOpenMoviesHelper.getReadableDatabase().query(MovieContract.MovieEntry.TABLE_MOVIES,
+                    cursor = mOpenMoviesHelper.getReadableDatabase().query(MovieContract.MovieEntry.TABLE_MOVIES,
                             FAVORITES_PROJECTION, null, null, null, null, null);
-                    int primaryKeyColumnIndex = mCursor.getColumnIndex(MovieContract.MovieEntry._ID);
-                    int idColumnIndex = mCursor.getColumnIndex(MovieContract.MovieEntry.DB_MOVIE_ID);
-                    int titleColumnIndex = mCursor.getColumnIndex(MovieContract.MovieEntry.DB_TITLE);
-                    int posterColumnIndex = mCursor.getColumnIndex(MovieContract.MovieEntry.DB_POSTER_PATH);
-                    int backdropColumnIndex = mCursor.getColumnIndex(MovieContract.MovieEntry.DB_BACKDROP_PATH);
-                    int releasedDateColumnIndex = mCursor.getColumnIndex(MovieContract.MovieEntry.DB_RELEASE_DATE);
-                    int synopsisColumnIndex = mCursor.getColumnIndex(MovieContract.MovieEntry.DB_SYNOPSIS);
-                    int voteColumnIndex = mCursor.getColumnIndex(MovieContract.MovieEntry.DB_VOTE_AVERAGE);
+                    int primaryKeyColumnIndex = cursor.getColumnIndex(MovieContract.MovieEntry._ID);
+                    int idColumnIndex = cursor.getColumnIndex(MovieContract.MovieEntry.DB_MOVIE_ID);
+                    int titleColumnIndex = cursor.getColumnIndex(MovieContract.MovieEntry.DB_TITLE);
+                    int posterColumnIndex = cursor.getColumnIndex(MovieContract.MovieEntry.DB_POSTER_PATH);
+                    int backdropColumnIndex = cursor.getColumnIndex(MovieContract.MovieEntry.DB_BACKDROP_PATH);
+                    int releasedDateColumnIndex = cursor.getColumnIndex(MovieContract.MovieEntry.DB_RELEASE_DATE);
+                    int synopsisColumnIndex = cursor.getColumnIndex(MovieContract.MovieEntry.DB_SYNOPSIS);
+                    int voteColumnIndex = cursor.getColumnIndex(MovieContract.MovieEntry.DB_VOTE_AVERAGE);
 
-                    if (mCursor.getCount() > 0) {
-                        while (mCursor.moveToNext()) {
-                            int primaryKeyID = mCursor.getInt(primaryKeyColumnIndex);
-                            int currentID = mCursor.getInt(idColumnIndex);
-                            String currentTitle = mCursor.getString(titleColumnIndex);
+                    if (cursor.getCount() > 0) {
+                        while (cursor.moveToNext()) {
+                            int primaryKeyID = cursor.getInt(primaryKeyColumnIndex);
+                            int currentID = cursor.getInt(idColumnIndex);
+                            String currentTitle = cursor.getString(titleColumnIndex);
                             //String currentPosterPath = mCursor.getString(posterColumnIndex);
-                            String currentBackdropPath = mCursor.getString(backdropColumnIndex);
+                            String currentBackdropPath = cursor.getString(backdropColumnIndex);
                             //String currentReleaseDate = mCursor.getString(releasedDateColumnIndex);
-                            String currentSynopsis = mCursor.getString(synopsisColumnIndex);
-                            String currentVoteAverage = mCursor.getString(voteColumnIndex);
+                            String currentSynopsis = cursor.getString(synopsisColumnIndex);
+                            String currentVoteAverage = cursor.getString(voteColumnIndex);
 
                             mMovie = new Movie(currentBackdropPath,
                                     currentSynopsis, currentTitle, currentID, currentVoteAverage);
 
                             movieList.add(mMovie);
-                            mMovieAdapter.addAll(movieList);
+                            //mMovieAdapter.addAll(movieList);
                         }
                     }
                 }
@@ -229,21 +227,21 @@ public class MainActivityFragment extends Fragment {
                 getLoaderManager().restartLoader(LOADER_ID, null, mListMovieLoader);
 
             case R.id.favorites_id:
-                getLoaderManager().destroyLoader(LOADER_ID);
-                getActivity().getSupportLoaderManager().initLoader(LOADER_CURSOR_ID, null, mLoaderCursor);
+               // getLoaderManager().destroyLoader(LOADER_ID);
+                getActivity().getSupportLoaderManager().restartLoader(LOADER_CURSOR_ID, null, mLoaderCursor);
                 Log.e(LOG_TAG, getString(R.string.favorites_chosen));
 
             case R.id.delete_all:
-                //deleteData();
+               deleteData();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public int deleteData() {
+    public void deleteData() {
         int numDeleted = getActivity().getContentResolver()
                 .delete(MovieContract.MovieEntry.CONTENT_URI, null, null);
         Toast.makeText(getContext(), "Database deleted: " + numDeleted + " items.", Toast.LENGTH_LONG).show();
-        return numDeleted;
+
     }
 
 }
