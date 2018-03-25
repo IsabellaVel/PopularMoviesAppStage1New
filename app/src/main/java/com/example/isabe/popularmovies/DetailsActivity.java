@@ -72,10 +72,9 @@ public class DetailsActivity extends AppCompatActivity {
 
                 @Override
                 public Loader<List<Review>> onCreateLoader(int id, Bundle args) {
-                    Uri movieReviewUri = new Uri.Builder()
-                            .appendPath(DEFAULT_REVIEW_MD_LINK)
+                    Uri movieReviewUri = Uri.parse(DEFAULT_REVIEW_MD_LINK).buildUpon()
                             .appendPath(String.valueOf(movieIdFromTMDB))
-                            .appendPath("reviews")
+                            .appendPath("/reviews?")
                             .appendQueryParameter(API_KEY_QUERY, apiKey)
                             .build();
                     URL movieReviewUrl = NetworkUtils.createUrl((movieReviewUri).toString());
@@ -182,8 +181,11 @@ public class DetailsActivity extends AppCompatActivity {
     private void setupRecyclerView(RecyclerView recyclerView) {
         ReviewAdapter mReviewAdapter = new ReviewAdapter(this, movieReviews);
         mRecyclerReviews = findViewById(R.id.review_content);
-        mRecyclerReviews.setLayoutManager(new LinearLayoutManager(this,
-                LinearLayoutManager.HORIZONTAL, false));
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mRecyclerReviews.setLayoutManager(linearLayoutManager);
+
         mRecyclerReviews.setAdapter(mReviewAdapter);
     }
 
