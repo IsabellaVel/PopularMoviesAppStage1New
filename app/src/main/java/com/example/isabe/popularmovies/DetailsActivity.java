@@ -6,10 +6,16 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,11 +23,20 @@ import android.widget.Toast;
 import com.example.isabe.popularmovies.data.MovieContract;
 import com.example.isabe.popularmovies.data.MovieContract.MovieEntry;
 import com.example.isabe.popularmovies.data.MovieDbHelper;
+import com.example.isabe.popularmovies.utilities.MovieDbJSONUtils;
+import com.example.isabe.popularmovies.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Random;
+
+import static com.example.isabe.popularmovies.utilities.NetworkUtils.API_KEY_QUERY;
+import static com.example.isabe.popularmovies.utilities.NetworkUtils.apiKey;
 
 /**
  * Created by isabe on 2/23/2018.
@@ -29,6 +44,7 @@ import java.util.Date;
 
 public class DetailsActivity extends AppCompatActivity {
     private static final String LOG_TAG = DetailsActivity.class.getSimpleName();
+    private static final int LOADER_ID = 1;
     private static Movie mMovieDetails;
     int movieIdFromTMDB;
     String originalTitle;
@@ -38,18 +54,54 @@ public class DetailsActivity extends AppCompatActivity {
     String backdropImage;
     String movieSynopsis;
     public Uri mNewMovieAddedToDB;
+    private List<Review> movieReviews = new ArrayList<Review>();
+    private List<Trailer> movieTrailers;
+    private RecyclerView mRecyclerReviews;
+    private RecyclerView mRecyclerTrailers;
 
     private MovieDbHelper movieDbHelper = new MovieDbHelper(this);
     SQLiteDatabase db;
     Cursor mCursor;
     TextView displayView;
+    private RecyclerView.Adapter mReviewAdapter;
+
+    public static final String DEFAULT_REVIEW_MD_LINK = "http://api.themoviedb.org/3/movie/";
+
+    private android.support.v4.app.LoaderManager.LoaderCallbacks mListReviewsLoader =
+            new LoaderManager.LoaderCallbacks<List<Review>>() {
+
+                @Override
+                public Loader<List<Review>> onCreateLoader(int id, Bundle args) {
+                    Uri movieReviewUri = new Uri.Builder()
+                            .appendPath(DEFAULT_REVIEW_MD_LINK)
+                            .appendPath(String.valueOf(movieIdFromTMDB))
+                            .appendPath("reviews")
+                            .appendQueryParameter(API_KEY_QUERY, apiKey)
+                            .build();
+                    URL movieReviewUrl = NetworkUtils.createUrl((movieReviewUri).toString());
+                    return new ReviewLoader(DetailsActivity.this, (movieReviewUrl).toString());
+                }
+
+                @Override
+                public void onLoadFinished(Loader<List<Review>> loader, List<Review> reviewData) {
+                    if (reviewData != null && !reviewData.isEmpty()) {
+                        movieReviews.addAll(reviewData);
+                        Log.e(LOG_TAG, "Successful LoadFinished.");
+                    }
+                }
+
+                @Override
+                public void onLoaderReset(Loader<List<Review>> loader) {
+                    movieReviews.clear();
+                }
+            };
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.details_movie);
 
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar !=null){
+        if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
@@ -86,10 +138,20 @@ public class DetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 insertData();
-                //readDataCheckMethod();
             }
         });
+
+        showReview();
     }
+
+  /* public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mRecyclerReviews = (RecyclerView) inflater.inflate(
+                R.layout.recycler_view_reviews_list, container, false);
+        setupRecyclerView(mRecyclerReviews);
+        return mRecyclerReviews;
+    }
+    */
+
 
     public void insertData() {
 
@@ -108,6 +170,22 @@ public class DetailsActivity extends AppCompatActivity {
 
     }
 
+    private void showReview() {
+
+        android.support.v4.app.LoaderManager loaderManager = getSupportLoaderManager();
+        loaderManager.initLoader(LOADER_ID, null, mListReviewsLoader);
+
+        movieReviews = new ArrayList<>();
+        setupRecyclerView(mRecyclerReviews);
+    }
+
+    private void setupRecyclerView(RecyclerView recyclerView) {
+        ReviewAdapter mReviewAdapter = new ReviewAdapter(this, movieReviews);
+        mRecyclerReviews = findViewById(R.id.review_content);
+        mRecyclerReviews.setLayoutManager(new LinearLayoutManager(this,
+                LinearLayoutManager.HORIZONTAL, false));
+        mRecyclerReviews.setAdapter(mReviewAdapter);
+    }
 
     private String convertDateFormat(String dateString) {
         if (dateString != null && !dateString.isEmpty()) {

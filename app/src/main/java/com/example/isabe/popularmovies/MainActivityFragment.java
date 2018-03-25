@@ -222,17 +222,19 @@ public class MainActivityFragment extends Fragment {
                 movieDisplayStyleLink = MOVIE_DB_URL_TOP_RATED;
                 getLoaderManager().restartLoader(0, null, mListMovieLoader);
                 Log.e(LOG_TAG, getString(R.string.log_top_rated_menu));
+                break;
             case R.id.most_popular:
                 movieDisplayStyleLink = DEFAULT_POPULAR_MOVIE_DB_URL;
                 getLoaderManager().restartLoader(LOADER_ID, null, mListMovieLoader);
-
+                break;
             case R.id.favorites_id:
-               // getLoaderManager().destroyLoader(LOADER_ID);
+                // getLoaderManager().destroyLoader(LOADER_ID);
                 getActivity().getSupportLoaderManager().restartLoader(LOADER_CURSOR_ID, null, mLoaderCursor);
                 Log.e(LOG_TAG, getString(R.string.favorites_chosen));
-
+                break;
             case R.id.delete_all:
-               deleteData();
+                deleteData();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

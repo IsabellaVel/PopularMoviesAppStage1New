@@ -5,6 +5,7 @@ import android.util.Log;
 import com.example.isabe.popularmovies.BuildConfig;
 import com.example.isabe.popularmovies.MainActivityFragment;
 import com.example.isabe.popularmovies.Movie;
+import com.example.isabe.popularmovies.Review;
 
 import org.json.JSONException;
 
@@ -12,7 +13,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -47,6 +50,22 @@ public final class NetworkUtils {
         return movieList;
     }
 
+    public static List<Review> fetchMovieReview(String requestUrl) throws JSONException {
+        URL url = createUrl(requestUrl);
+        String jsonResponse = null;
+        try {
+            jsonResponse = getResponseFromHttpUrl(url);
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Problem making the HTTP request.", e);
+        }
+        List<Review> movieReviewsList = null;
+        try {
+            movieReviewsList = MovieDbJSONUtils.getReviewFromJSON(jsonResponse);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return movieReviewsList;
+    }
     /**
      * public static URL buildUrl(String apiKey) {
      * Uri movieUri = Uri.parse(MOVIE_BASE_URL).buildUpon()
