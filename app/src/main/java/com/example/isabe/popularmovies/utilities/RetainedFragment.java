@@ -3,7 +3,7 @@ package com.example.isabe.popularmovies.utilities;
 import android.app.Fragment;
 import android.os.Bundle;
 
-import com.example.isabe.popularmovies.Movie;
+import com.example.isabe.popularmovies.objects.Movie;
 
 /**
  * Created by isabe on 2/24/2018.

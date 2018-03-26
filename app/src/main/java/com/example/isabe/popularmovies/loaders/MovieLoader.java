@@ -1,9 +1,10 @@
-package com.example.isabe.popularmovies;
+package com.example.isabe.popularmovies.loaders;
 
 import android.support.v4.content.AsyncTaskLoader;
 
 import android.content.Context;
 
+import com.example.isabe.popularmovies.objects.Movie;
 import com.example.isabe.popularmovies.utilities.NetworkUtils;
 
 import org.json.JSONException;

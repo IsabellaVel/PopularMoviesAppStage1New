@@ -1,4 +1,4 @@
-package com.example.isabe.popularmovies;
+package com.example.isabe.popularmovies.adapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
+import com.example.isabe.popularmovies.R;
+import com.example.isabe.popularmovies.objects.Movie;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -19,7 +21,7 @@ import java.util.List;
  * Created by isabe on 2/17/2018.
  */
 
-class MovieAdapter extends ArrayAdapter<Movie> {
+public class MovieAdapter extends ArrayAdapter<Movie> {
     private static final String LOG_TAG = MovieAdapter.class.getSimpleName();
     private final Context mContext;
     private Cursor mCursor;

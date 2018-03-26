@@ -13,17 +13,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.isabe.popularmovies.data.MovieContract;
+import com.example.isabe.popularmovies.adapters.ReviewAdapter;
+import com.example.isabe.popularmovies.adapters.TrailerAdapter;
 import com.example.isabe.popularmovies.data.MovieContract.MovieEntry;
 import com.example.isabe.popularmovies.data.MovieDbHelper;
-import com.example.isabe.popularmovies.utilities.MovieDbJSONUtils;
+import com.example.isabe.popularmovies.loaders.ReviewLoader;
+import com.example.isabe.popularmovies.loaders.TrailerLoader;
+import com.example.isabe.popularmovies.objects.Movie;
+import com.example.isabe.popularmovies.objects.Review;
+import com.example.isabe.popularmovies.objects.Trailer;
 import com.example.isabe.popularmovies.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
@@ -33,7 +36,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 import static com.example.isabe.popularmovies.utilities.NetworkUtils.API_KEY_QUERY;
 import static com.example.isabe.popularmovies.utilities.NetworkUtils.apiKey;
@@ -45,6 +47,7 @@ import static com.example.isabe.popularmovies.utilities.NetworkUtils.apiKey;
 public class DetailsActivity extends AppCompatActivity {
     private static final String LOG_TAG = DetailsActivity.class.getSimpleName();
     private static final int LOADER_ID = 1;
+    private static final int LOADER_VIDEO_ID = 2;
     private static Movie mMovieDetails;
     int movieIdFromTMDB;
     String originalTitle;
@@ -55,7 +58,7 @@ public class DetailsActivity extends AppCompatActivity {
     String movieSynopsis;
     public Uri mNewMovieAddedToDB;
     private List<Review> movieReviews = new ArrayList<Review>();
-    private List<Trailer> movieTrailers;
+    private List<Trailer> movieTrailers = new ArrayList<>();
     private RecyclerView mRecyclerReviews;
     private RecyclerView mRecyclerTrailers;
 
@@ -66,6 +69,8 @@ public class DetailsActivity extends AppCompatActivity {
     private RecyclerView.Adapter mReviewAdapter;
 
     public static final String DEFAULT_REVIEW_MD_LINK = "http://api.themoviedb.org/3/movie/";
+    public static final String YOUTUBE_LINK_VIDEO = "https://www.youtube.com/watch?v=";
+
 
     private android.support.v4.app.LoaderManager.LoaderCallbacks mListReviewsLoader =
             new LoaderManager.LoaderCallbacks<List<Review>>() {
@@ -74,7 +79,7 @@ public class DetailsActivity extends AppCompatActivity {
                 public Loader<List<Review>> onCreateLoader(int id, Bundle args) {
                     Uri movieReviewUri = Uri.parse(DEFAULT_REVIEW_MD_LINK).buildUpon()
                             .appendPath(String.valueOf(movieIdFromTMDB))
-                            .appendPath("/reviews?")
+                            .appendPath("reviews")
                             .appendQueryParameter(API_KEY_QUERY, apiKey)
                             .build();
                     URL movieReviewUrl = NetworkUtils.createUrl((movieReviewUri).toString());
@@ -85,7 +90,7 @@ public class DetailsActivity extends AppCompatActivity {
                 public void onLoadFinished(Loader<List<Review>> loader, List<Review> reviewData) {
                     if (reviewData != null && !reviewData.isEmpty()) {
                         movieReviews.addAll(reviewData);
-                        Log.e(LOG_TAG, "Successful LoadFinished.");
+                        Log.e(LOG_TAG, "Successful Review LoadFinished.");
                     }
                 }
 
@@ -94,6 +99,36 @@ public class DetailsActivity extends AppCompatActivity {
                     movieReviews.clear();
                 }
             };
+
+    private android.support.v4.app.LoaderManager.LoaderCallbacks mListMovieTrailers =
+            new LoaderManager.LoaderCallbacks<List<Trailer>>() {
+
+                @Override
+                public Loader<List<Trailer>> onCreateLoader(int id, Bundle args) {
+                    Uri movieTrailerUri = Uri.parse(DEFAULT_REVIEW_MD_LINK).buildUpon()
+                            .appendPath(String.valueOf(movieIdFromTMDB))
+                            .appendPath("videos")
+                            .appendQueryParameter(API_KEY_QUERY, apiKey)
+                            .build();
+                    URL movieTrailerUrl = NetworkUtils.createUrl((movieTrailerUri).toString());
+
+                    return new TrailerLoader(DetailsActivity.this, (movieTrailerUrl).toString());
+                }
+
+                @Override
+                public void onLoadFinished(Loader<List<Trailer>> loader, List<Trailer> trailerList) {
+                    if (trailerList != null && !trailerList.isEmpty()) {
+                        movieTrailers.addAll(trailerList);
+                        Log.e(LOG_TAG, "Successful TrailerLoadFinished.");
+                    }
+                }
+
+                @Override
+                public void onLoaderReset(Loader<List<Trailer>> loader) {
+                    movieTrailers.clear();
+                }
+            };
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,6 +176,7 @@ public class DetailsActivity extends AppCompatActivity {
         });
 
         showReview();
+        showTrailers();
     }
 
   /* public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -176,6 +212,25 @@ public class DetailsActivity extends AppCompatActivity {
 
         movieReviews = new ArrayList<>();
         setupRecyclerView(mRecyclerReviews);
+    }
+
+    private void showTrailers() {
+        android.support.v4.app.LoaderManager loaderManager = getSupportLoaderManager();
+        loaderManager.initLoader(LOADER_VIDEO_ID, null, mListMovieTrailers);
+
+        movieTrailers = new ArrayList<>();
+        setupRecyclerTrailersView(mRecyclerTrailers);
+    }
+
+    private void setupRecyclerTrailersView(RecyclerView recyclerView) {
+        TrailerAdapter mTrailerAdapter = new TrailerAdapter(this, movieTrailers);
+        mRecyclerTrailers = findViewById(R.id.trailer_movie);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mRecyclerTrailers.setLayoutManager(linearLayoutManager);
+
+        mRecyclerTrailers.setAdapter(mTrailerAdapter);
     }
 
     private void setupRecyclerView(RecyclerView recyclerView) {

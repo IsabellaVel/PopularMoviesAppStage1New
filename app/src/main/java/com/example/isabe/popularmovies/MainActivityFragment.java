@@ -20,9 +20,11 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import com.example.isabe.popularmovies.adapters.MovieAdapter;
 import com.example.isabe.popularmovies.data.MovieContract;
 import com.example.isabe.popularmovies.data.MovieDbHelper;
-import com.example.isabe.popularmovies.data.MoviesProvider;
+import com.example.isabe.popularmovies.loaders.MovieLoader;
+import com.example.isabe.popularmovies.objects.Movie;
 import com.example.isabe.popularmovies.utilities.NetworkUtils;
 
 import java.net.URL;

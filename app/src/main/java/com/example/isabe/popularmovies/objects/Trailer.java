@@ -1,6 +1,5 @@
-package com.example.isabe.popularmovies;
+package com.example.isabe.popularmovies.objects;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -12,17 +11,21 @@ public class Trailer implements Parcelable {
     private String mNameTrailer;
     private String mTrailerSize;
     private String mTrailerSite;
+    private String mYoutubeImageUrl = "http://img.youtube.com/vi/";
+    private String mKeySearchVideo;
 
-    public Trailer(String name, String size, String site) {
+    public Trailer(String name, String size, String site, String key) {
         mNameTrailer = name;
         mTrailerSize = size;
         mTrailerSite = site;
+        mKeySearchVideo = key;
     }
 
     protected Trailer(Parcel in) {
         mNameTrailer = in.readString();
         mTrailerSize = in.readString();
         mTrailerSite = in.readString();
+        mKeySearchVideo = in.readString();
     }
 
     public static final Creator<Trailer> CREATOR = new Creator<Trailer>() {
@@ -47,6 +50,7 @@ public class Trailer implements Parcelable {
         parcel.writeString(mNameTrailer);
         parcel.writeString(mTrailerSize);
         parcel.writeString(mTrailerSite);
+        parcel.writeString(mKeySearchVideo);
     }
 
     public String getmNameTrailer() {
@@ -59,5 +63,9 @@ public class Trailer implements Parcelable {
 
     public String getmTrailerSite() {
         return mTrailerSite;
+    }
+
+    public String getmKeySearchVideo() {
+        return mYoutubeImageUrl + mKeySearchVideo + ".0.jpg";
     }
 }

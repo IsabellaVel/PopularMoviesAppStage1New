@@ -3,9 +3,9 @@ package com.example.isabe.popularmovies.utilities;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.example.isabe.popularmovies.Movie;
-import com.example.isabe.popularmovies.Review;
-import com.example.isabe.popularmovies.Trailer;
+import com.example.isabe.popularmovies.objects.Movie;
+import com.example.isabe.popularmovies.objects.Review;
+import com.example.isabe.popularmovies.objects.Trailer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,10 +37,9 @@ public class MovieDbJSONUtils {
     private static final String MD_SITE_VIDEO = "site";
     private static final String MD_SIZE_VIDEO = "size";
     private static final String MD_NAME_VIDEO = "name";
+    private static final String MD_VIDEO_SEARCH_KEY = "key";
 
     public static final String BASE_MOVIE_DB_ULR = "http://api.themoviedb.org/3/movie/";
-    public static final String VIDEOS_URL_PATH = "videos?";
-    public static final String REVIEWS_URL_PATH = "reviews?";
     public static final String LOG_TAG = MovieDbJSONUtils.class.getSimpleName();
 
     public static List<Movie> getMovieDetailsFromJson(String movieJsonString)
@@ -146,8 +145,9 @@ public class MovieDbJSONUtils {
                 String trailerName = currentMovieTrailer.getString(MD_NAME_VIDEO);
                 String trailerSize = currentMovieTrailer.getString(MD_SIZE_VIDEO);
                 String trailerSite = currentMovieTrailer.getString(MD_SITE_VIDEO);
+                String trailerKey = currentMovieTrailer.getString(MD_VIDEO_SEARCH_KEY);
 
-                Trailer movieTrailer = new Trailer(trailerName, trailerSize, trailerSite);
+                Trailer movieTrailer = new Trailer(trailerName, trailerSize, trailerSite, trailerKey);
                 trailerMovies.add(movieTrailer);
             }
             Log.d(LOG_TAG, "Trailers delivered.");

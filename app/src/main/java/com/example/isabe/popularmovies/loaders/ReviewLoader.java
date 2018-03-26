@@ -1,17 +1,15 @@
-package com.example.isabe.popularmovies;
+package com.example.isabe.popularmovies.loaders;
 
 import android.content.Context;
 
 import java.util.List;
 
 import android.support.v4.content.AsyncTaskLoader;
-import android.content.Context;
 
+import com.example.isabe.popularmovies.objects.Review;
 import com.example.isabe.popularmovies.utilities.NetworkUtils;
 
 import org.json.JSONException;
-
-import java.util.List;
 
 /**
  * Created by isabe on 3/25/2018.

@@ -3,9 +3,9 @@ package com.example.isabe.popularmovies.utilities;
 import android.util.Log;
 
 import com.example.isabe.popularmovies.BuildConfig;
-import com.example.isabe.popularmovies.MainActivityFragment;
-import com.example.isabe.popularmovies.Movie;
-import com.example.isabe.popularmovies.Review;
+import com.example.isabe.popularmovies.objects.Movie;
+import com.example.isabe.popularmovies.objects.Review;
+import com.example.isabe.popularmovies.objects.Trailer;
 
 import org.json.JSONException;
 
@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.List;
@@ -66,14 +65,23 @@ public final class NetworkUtils {
         }
         return movieReviewsList;
     }
-    /**
-     * public static URL buildUrl(String apiKey) {
-     * Uri movieUri = Uri.parse(MOVIE_BASE_URL).buildUpon()
-     * .appendQueryParameter(API_KEY_QUERY, apiKey)
-     * .build();
-     * URL url = createUrl((movieUri).toString());
-     * return url;}
-     **/
+
+    public static List<Trailer> fetchMovieTrailer(String requestUrl) throws JSONException {
+        URL url = createUrl(requestUrl);
+        String jsonResponse = null;
+        try {
+            jsonResponse = getResponseFromHttpUrl(url);
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Problem making the HTTP request.", e);
+        }
+        List<Trailer> movieTrailerList = null;
+        try {
+            movieTrailerList = MovieDbJSONUtils.getTrailerFromJSON(jsonResponse);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return movieTrailerList;
+    }
 
     public static URL createUrl(String stringUrl) {
         URL url = null;
