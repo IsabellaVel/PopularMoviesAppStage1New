@@ -16,7 +16,7 @@
         android:id="@+id/review_content_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxLines="4"
+        android:gravity="fill_horizontal"
         android:textAppearance="?android:textAppearanceMedium"
         android:textSize="12sp" />
 </LinearLayout>

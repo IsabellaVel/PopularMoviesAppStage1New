@@ -25,13 +25,8 @@ import java.util.Scanner;
 public final class NetworkUtils {
     private static final String LOG_TAG = NetworkUtils.class.getSimpleName();
 
-    // private static final String MOVIE_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/";
-
     public static final String apiKey = BuildConfig.API_KEY;
-
-
     public final static String API_KEY_QUERY = "api_key";
-    //final static String IMAGE_SIZE_PARAM = "size";
 
     private NetworkUtils() {
 
@@ -94,24 +89,6 @@ public final class NetworkUtils {
         Log.v(LOG_TAG, "Built URI " + url);
         return url;
     }
-
-    /**
-     * public static URL buildImageUrl(String imageQuery) {
-     * Uri movieUri = Uri.parse(MOVIE_IMAGE_BASE_URL).buildUpon()
-     * .appendQueryParameter(IMAGE_SIZE_PARAM, image_size)
-     * //.appendQueryParameter(IMAGE_FILE_PATH_PARAM, file_path_image)
-     * .build();
-     * <p>
-     * URL urlImage = null;
-     * try {
-     * urlImage = new URL(movieUri.toString());
-     * } catch (MalformedURLException e) {
-     * e.printStackTrace();
-     * }
-     * Log.v(LOG_TAG, "Built URI " + urlImage);
-     * return urlImage;
-     * }
-     **/
 
     private static String getResponseFromHttpUrl(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();

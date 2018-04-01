@@ -1,10 +1,15 @@
 package com.example.isabe.popularmovies;
 
+import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -14,6 +19,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,28 +50,28 @@ import static com.example.isabe.popularmovies.utilities.NetworkUtils.apiKey;
  * Created by isabe on 2/23/2018.
  */
 
-public class DetailsActivity extends AppCompatActivity {
+public class DetailsActivity extends AppCompatActivity implements TrailerAdapter.OnItemClicked {
     private static final String LOG_TAG = DetailsActivity.class.getSimpleName();
     private static final int LOADER_ID = 1;
     private static final int LOADER_VIDEO_ID = 2;
     private static Movie mMovieDetails;
-    int movieIdFromTMDB;
-    String originalTitle;
-    String releaseDate;
-    String imagePath;
-    String voteAverage;
-    String backdropImage;
-    String movieSynopsis;
-    public Uri mNewMovieAddedToDB;
+    private int movieIdFromTMDB;
+    private String originalTitle;
+    private String releaseDate;
+    private String imagePath;
+    private String voteAverage;
+    private String backdropImage;
+    private String movieSynopsis;
+
+
     private List<Review> movieReviews = new ArrayList<Review>();
     private List<Trailer> movieTrailers = new ArrayList<>();
     private RecyclerView mRecyclerReviews;
     private RecyclerView mRecyclerTrailers;
+    private TrailerAdapter mTrailerAdapter;
+    public ImageView mPlayIcon;
 
-    private MovieDbHelper movieDbHelper = new MovieDbHelper(this);
-    SQLiteDatabase db;
-    Cursor mCursor;
-    TextView displayView;
+    Context mContext;
     private RecyclerView.Adapter mReviewAdapter;
 
     public static final String DEFAULT_REVIEW_MD_LINK = "http://api.themoviedb.org/3/movie/";
@@ -140,35 +146,41 @@ public class DetailsActivity extends AppCompatActivity {
         }
 
         mMovieDetails = getIntent().getExtras().getParcelable("MOVIE_DETAILS");
+
         ImageView mMoviePoster = findViewById(R.id.detail_image);
         TextView mOriginalTitle = findViewById(R.id.tv_movie_title);
         TextView mReleaseDate = findViewById(R.id.tv_releaseDate);
         TextView mSynopsis = findViewById(R.id.tv_movie_synopsis);
         TextView mVoteAverage = findViewById(R.id.tv_vote_average);
 
-        Bundle bundleGetExtras = getIntent().getExtras();
-        if (bundleGetExtras != null) {
-            originalTitle = bundleGetExtras.getString(getString(R.string.original_title));
-            releaseDate = bundleGetExtras.getString(getString(R.string.string_date_release));
-            imagePath = bundleGetExtras.getString(getString(R.string.image_path_string));
-            movieSynopsis = bundleGetExtras.getString(getString(R.string.movie_summary));
-            voteAverage = bundleGetExtras.getString(getString(R.string.vote_string));
-            voteAverage = voteAverage + " " + getString(R.string.votePercent);
-            movieIdFromTMDB = bundleGetExtras.getInt(getString(R.string.movie_string_id));
-            String fullImagePosterLink = "https://image.tmdb.org/t/p/w185" + imagePath;
-            backdropImage = bundleGetExtras.getString(getString(R.string.backdrop_string_path));
-            String fullImageBackdropPath = "https://image.tmdb.org/t/p/w185" + backdropImage;
+        /**Bundle bundleGetExtras = getIntent().getExtras();
+         if (bundleGetExtras != null) {
+         originalTitle = bundleGetExtras.getString(getString(R.string.original_title));
+         releaseDate = bundleGetExtras.getString(getString(R.string.string_date_release));
+         imagePath = bundleGetExtras.getString(getString(R.string.image_path_string));
+         movieSynopsis = bundleGetExtras.getString(getString(R.string.movie_summary));
+         voteAverage = bundleGetExtras.getString(getString(R.string.vote_string));
+         voteAverage = voteAverage + " " + getString(R.string.votePercent);
+         movieIdFromTMDB = bundleGetExtras.getInt(getString(R.string.movie_string_id));
+         String fullImagePosterLink = "https://image.tmdb.org/t/p/w185" + imagePath;
+         backdropImage = bundleGetExtras.getString(getString(R.string.backdrop_string_path));
+         String fullImageBackdropPath = "https://image.tmdb.org/t/p/w185" + backdropImage;
+         **/
+        String fullImageBackdropPath = "https://image.tmdb.org/t/p/w185" + mMovieDetails.getmBackdropPath();
+        Picasso.with(this).load(fullImageBackdropPath).into(mMoviePoster);
+        mOriginalTitle.setText(mMovieDetails.getmOriginalTitle());
+        mReleaseDate.setText(convertDateFormat(mMovieDetails.getmReleaseDate()));
+        Log.i(LOG_TAG, getString(R.string.date_log));
+        mSynopsis.setText(mMovieDetails.getmOverviewMovie());
+        mVoteAverage.setText(mMovieDetails.getmVoteAverage());
+        movieIdFromTMDB = mMovieDetails.getmMovieTMDBId();
+        //}
 
-            Picasso.with(this).load(fullImageBackdropPath).into(mMoviePoster);
-            mOriginalTitle.setText(originalTitle);
-            mReleaseDate.setText(convertDateFormat(releaseDate));
-            Log.i(LOG_TAG, getString(R.string.date_log));
-            mSynopsis.setText(movieSynopsis);
-            mVoteAverage.setText(voteAverage);
-        }
 
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        fab.setOnClickListener(new View.OnClickListener()
+
+        {
             @Override
             public void onClick(View view) {
                 insertData();
@@ -176,7 +188,9 @@ public class DetailsActivity extends AppCompatActivity {
         });
 
         showReview();
+
         showTrailers();
+
     }
 
   /* public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -231,6 +245,7 @@ public class DetailsActivity extends AppCompatActivity {
         mRecyclerTrailers.setLayoutManager(linearLayoutManager);
 
         mRecyclerTrailers.setAdapter(mTrailerAdapter);
+        mTrailerAdapter.setOnClick(this);
     }
 
     private void setupRecyclerView(RecyclerView recyclerView) {
@@ -243,6 +258,7 @@ public class DetailsActivity extends AppCompatActivity {
 
         mRecyclerReviews.setAdapter(mReviewAdapter);
     }
+
 
     private String convertDateFormat(String dateString) {
         if (dateString != null && !dateString.isEmpty()) {
@@ -264,5 +280,10 @@ public class DetailsActivity extends AppCompatActivity {
             return dateStringFinal;
         }
         return null;
+    }
+
+    @Override
+    public void onItemClick(int position) {
+
     }
 }

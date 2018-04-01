@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true">
 
     <LinearLayout
@@ -11,96 +12,82 @@
         android:orientation="vertical"
         tools:context="com.example.isabe.popularmovies.DetailsActivity">
 
-            <ImageView
-                android:id="@+id/detail_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:adjustViewBounds="true"
-                android:contentDescription="TODO"
-                android:src="@drawable/movie_icon" />
-
-            <TextView
-                android:id="@+id/tv_movie_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:text="@string/original_title"
-                android:textColor="#000000"
-                android:textSize="24sp" />
-
-            <TextView
-                android:id="@+id/tv_movie_synopsis"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:text="@string/movie_summary" />
-
-            <TextView
-                android:id="@+id/tv_vote_average"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:text="@string/vote_string"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/tv_releaseOnLabel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:text="@string/string_date_release"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/tv_releaseDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:text="@string/release_date"
-                android:textSize="16sp" />
-
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|bottom"
-                android:layout_margin="16dp"
-                android:src="@drawable/star_fab" />
-
-        <LinearLayout
-            android:id="@+id/review_layout_linear"
+        <ImageView
+            android:id="@+id/detail_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="TODO"
+            android:src="@drawable/movie_icon" />
 
-            <TextView
-                android:id="@+id/label_author"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:textSize="12sp"/>
+        <TextView
+            android:id="@+id/tv_movie_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/original_title"
+            android:textColor="#000000"
+            android:textSize="24sp" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/review_content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxLines="5"
-                android:textSize="12sp"
-                tools:listitem="@layout/recycler_view_reviews_list" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/tv_movie_synopsis"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/movie_summary" />
+
+        <TextView
+            android:id="@+id/tv_vote_average"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/vote_string"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_releaseOnLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/string_date_release"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_releaseDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/release_date"
+            android:textSize="16sp" />
+
+        <!--div>Icons made by <a href="https://www.flaticon.com/authors/google"
+           title="Google">Google</a> from <a href="https://www.flaticon.com/"
+           title="Flaticon">www.flaticon.com</a> is licensed by
+           <a href="http://creativecommons.org/licenses/by/3.0/"
+           title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+          -->
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            app:backgroundTint="@color/color_red_tint"
+            android:layout_margin="16dp"
+            android:src="@drawable/favorite_heart_button" />
 
         <LinearLayout
             android:id="@+id/trailer_layout_linear"
@@ -112,16 +99,42 @@
                 android:id="@+id/label_trailer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp" />
+                android:layout_margin="4dp"
+                android:padding="4dp" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/trailer_movie"
-                android:layout_width="200dp"
-                android:layout_height="150dp"
-                android:maxLines="5"
-                android:textSize="12sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
                 tools:listitem="@layout/recycler_view_trailers_list" />
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/review_layout_linear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:id="@+id/label_author"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
+                android:layout_marginLeft="4dp"
+                android:textSize="12sp" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/review_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="5"
+                android:textSize="12sp"
+                tools:listitem="@layout/recycler_view_reviews_list" />
+        </LinearLayout>
+
 
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

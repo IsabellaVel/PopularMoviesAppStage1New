@@ -7,13 +7,14 @@
 
     <ImageView
         android:id="@+id/trailer_video"
-        android:layout_width="200dp"
-        android:layout_height="150dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_margin="4dp" />
 
-    <ImageView
+       <ImageView
         android:id="@+id/play_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:src="@drawable/if_youtube_play_image" />
 </FrameLayout>

@@ -27,4 +27,5 @@
     <string name="favorites_chosen">Favorites chosen.</string>
     <string name="menu_favorites">Favorites</string>
     <string name="menu_delete_all">Delete All</string>
+    <string name="image_key_from_json">imageKey</string>
 </resources>

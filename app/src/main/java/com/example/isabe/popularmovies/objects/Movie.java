@@ -10,22 +10,20 @@ import android.os.Parcelable;
 public class Movie implements Parcelable {
     private final String mOriginalTitle;
     private String mReleaseDate;
-    private final String mVoteAverage;
-    private final String mOverviewMovie;
-    private final String mImageThumbnail;
+    private String mVoteAverage;
+    private String mOverviewMovie;
+    private String mImageThumbnail;
     private String mBackdropPath;
-    private Boolean mTrailerPath;
     private final int mMovieTMDBId;
 
     public Movie(String originalTitle, String releasedOnDate, String overview, String imageThumbnail, String averageVote,
-                 String backdropPath, Boolean movieTrailer, int movieId) {
+                 String backdropPath, int movieId) {
         this.mReleaseDate = releasedOnDate;
         this.mOriginalTitle = originalTitle;
         this.mVoteAverage = averageVote;
         this.mOverviewMovie = overview;
         this.mImageThumbnail = imageThumbnail;
         this.mBackdropPath = backdropPath;
-        this.mTrailerPath = movieTrailer;
         this.mMovieTMDBId = movieId;
     }
 
@@ -44,7 +42,6 @@ public class Movie implements Parcelable {
         mImageThumbnail = in.readString();
         mVoteAverage = in.readString();
         mBackdropPath = in.readString();
-        mTrailerPath = in.readByte() !=0;
         mMovieTMDBId = in.readInt();
 
     }
@@ -57,7 +54,6 @@ public class Movie implements Parcelable {
     public String toString() {
         return mOriginalTitle + "--" + mReleaseDate + "--"
                 + mVoteAverage + "--" + mOverviewMovie + "--" + mImageThumbnail + "--" + mBackdropPath
-                + "--" + mTrailerPath
                 + "--" + mMovieTMDBId;
     }
 
@@ -69,7 +65,6 @@ public class Movie implements Parcelable {
         parcel.writeString(mOverviewMovie);
         parcel.writeString(mImageThumbnail);
         parcel.writeString(mBackdropPath);
-        parcel.writeByte((byte) (mTrailerPath ? 1 : 0));
         parcel.writeInt(mMovieTMDBId);
     }
 
@@ -107,10 +102,6 @@ public class Movie implements Parcelable {
 
     public String getmBackdropPath() {
         return mBackdropPath;
-    }
-
-    public Boolean getmTrailerPath() {
-        return mTrailerPath;
     }
 
     public int getmMovieTMDBId() {

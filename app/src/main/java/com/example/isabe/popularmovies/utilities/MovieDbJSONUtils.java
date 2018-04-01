@@ -67,7 +67,7 @@ public class MovieDbJSONUtils {
 
                 Movie movieItem = new Movie(originalTitle,
                         movieReleasedOn, movieOverview, moviePosterImageThumbnail, voteAverage,
-                        movieBackdropPath, movieTrailer, movieTMDBId);
+                        movieBackdropPath, movieTMDBId);
 
                 moviesList.add(movieItem);
 

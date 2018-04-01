@@ -21,10 +21,12 @@ import android.widget.GridView;
 import android.widget.Toast;
 
 import com.example.isabe.popularmovies.adapters.MovieAdapter;
+import com.example.isabe.popularmovies.adapters.TrailerAdapter;
 import com.example.isabe.popularmovies.data.MovieContract;
 import com.example.isabe.popularmovies.data.MovieDbHelper;
 import com.example.isabe.popularmovies.loaders.MovieLoader;
 import com.example.isabe.popularmovies.objects.Movie;
+import com.example.isabe.popularmovies.objects.Trailer;
 import com.example.isabe.popularmovies.utilities.NetworkUtils;
 
 import java.net.URL;
@@ -177,7 +179,6 @@ public class MainActivityFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int item, long l) {
                 Movie thisMovie = mMovieAdapter.getItem(item);
                 assert thisMovie != null;
-                assert thisMovie != null;
                 String originalTitle = thisMovie.getmOriginalTitle();
                 String releaseDate = thisMovie.getmReleaseDate();
                 String voteAverage = thisMovie.getmVoteAverage();
@@ -188,15 +189,18 @@ public class MainActivityFragment extends Fragment {
 
                 Intent showDetailsIntent = new Intent(getActivity(), DetailsActivity.class);
 
-                Bundle bundleExtra = new Bundle();
-                bundleExtra.putString(getString(R.string.original_title), originalTitle);
-                bundleExtra.putString(getString(R.string.image_path_string), moviePoster);
-                bundleExtra.putString(getString(R.string.string_date_release), releaseDate);
-                bundleExtra.putString(getString(R.string.vote_string), voteAverage);
-                bundleExtra.putString(getString(R.string.movie_summary), movieSynopsis);
-                bundleExtra.putInt(getString(R.string.movie_string_id), movieID);
-                bundleExtra.putString(getString(R.string.backdrop_string_path), movieBackdrop);
-                showDetailsIntent.putExtras(bundleExtra);
+                showDetailsIntent.putExtra("MOVIE_DETAILS", thisMovie);
+
+                /**Bundle bundleExtra = new Bundle();
+                 bundleExtra.putString(getString(R.string.original_title), originalTitle);
+                 bundleExtra.putString(getString(R.string.image_path_string), moviePoster);
+                 bundleExtra.putString(getString(R.string.string_date_release), releaseDate);
+                 bundleExtra.putString(getString(R.string.vote_string), voteAverage);
+                 bundleExtra.putString(getString(R.string.movie_summary), movieSynopsis);
+                 bundleExtra.putInt(getString(R.string.movie_string_id), movieID);
+                 bundleExtra.putString(getString(R.string.backdrop_string_path), movieBackdrop);
+                 showDetailsIntent.putExtras(bundleExtra);
+                 **/
                 startActivity(showDetailsIntent);
 
             }
