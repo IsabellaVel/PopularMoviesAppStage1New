@@ -1,21 +1,19 @@
 package com.example.isabe.popularmovies.objects;
 
-import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.example.isabe.popularmovies.DetailsActivity;
 
 /**
  * Created by isabe on 3/24/2018.
  */
 
+@SuppressWarnings("DefaultFileTemplate")
 public class Trailer implements Parcelable {
-    public String mNameTrailer;
-    public String mTrailerSize;
-    public String mTrailerSite;
-    public String mYoutubeImageUrl = "http://img.youtube.com/vi/";
-    public String mKeySearchVideo;
+    private final String mNameTrailer;
+    private final String mTrailerSize;
+    private final String mTrailerSite;
+    private final String mYoutubeImageUrl = "http://img.youtube.com/vi/";
+    private final String mKeySearchVideo;
 
     public Trailer(String name, String size, String site, String key) {
         mNameTrailer = name;
@@ -24,7 +22,7 @@ public class Trailer implements Parcelable {
         mKeySearchVideo = key;
     }
 
-    protected Trailer(Parcel in) {
+    private Trailer(Parcel in) {
         mNameTrailer = in.readString();
         mTrailerSize = in.readString();
         mTrailerSite = in.readString();
@@ -54,14 +52,6 @@ public class Trailer implements Parcelable {
         parcel.writeString(mTrailerSize);
         parcel.writeString(mTrailerSite);
         parcel.writeString(mKeySearchVideo);
-    }
-
-    public String getmTrailerSize() {
-        return mTrailerSize;
-    }
-
-    public String getmTrailerSite() {
-        return mTrailerSite;
     }
 
     public String getmKeySearchImage() {

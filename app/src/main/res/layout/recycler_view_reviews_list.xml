@@ -17,6 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="fill_horizontal"
+        android:maxLines="5"
         android:textAppearance="?android:textAppearanceMedium"
         android:textSize="12sp" />
 </LinearLayout>

@@ -22,6 +22,7 @@ import java.util.Scanner;
  * Created by isabe on 2/17/2018.
  */
 
+@SuppressWarnings("DefaultFileTemplate")
 public final class NetworkUtils {
     private static final String LOG_TAG = NetworkUtils.class.getSimpleName();
 
@@ -53,11 +54,7 @@ public final class NetworkUtils {
             Log.e(LOG_TAG, "Problem making the HTTP request.", e);
         }
         List<Review> movieReviewsList = null;
-        try {
-            movieReviewsList = MovieDbJSONUtils.getReviewFromJSON(jsonResponse);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        movieReviewsList = MovieDbJSONUtils.getReviewFromJSON(jsonResponse);
         return movieReviewsList;
     }
 
@@ -69,12 +66,8 @@ public final class NetworkUtils {
         } catch (IOException e) {
             Log.e(LOG_TAG, "Problem making the HTTP request.", e);
         }
-        List<Trailer> movieTrailerList = null;
-        try {
-            movieTrailerList = MovieDbJSONUtils.getTrailerFromJSON(jsonResponse);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        List<Trailer> movieTrailerList;
+        movieTrailerList = MovieDbJSONUtils.getTrailerFromJSON(jsonResponse);
         return movieTrailerList;
     }
 

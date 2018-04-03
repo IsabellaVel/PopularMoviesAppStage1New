@@ -7,17 +7,18 @@ import android.os.Parcelable;
  * Created by isabe on 3/24/2018.
  */
 
+@SuppressWarnings("DefaultFileTemplate")
 public class Review implements Parcelable {
     private String mReviewUrl;
-    private String mReviewAuthor;
-    private String mReviewContent;
+    private final String mReviewAuthor;
+    private final String mReviewContent;
 
     public Review(String author, String content, String mReviewUrl) {
         mReviewAuthor = author;
         mReviewContent = content;
     }
 
-    protected Review(Parcel in) {
+    private Review(Parcel in) {
         mReviewUrl = in.readString();
         mReviewAuthor = in.readString();
         mReviewContent = in.readString();

@@ -9,10 +9,11 @@ import android.provider.BaseColumns;
  * Created by isabe on 3/17/2018.
  */
 
+@SuppressWarnings("DefaultFileTemplate")
 public class MovieContract {
     public static final String CONTENT_AUTHORITY = "com.example.isabe.popularmovies";
-    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
-    public static final String PATH_MOVIES = "movies";
+    private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+    private static final String PATH_MOVIES = "movies";
 
     public static final class MovieEntry implements BaseColumns {
         public static final String TABLE_MOVIES = "movies";

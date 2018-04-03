@@ -12,7 +12,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +20,8 @@ import java.util.List;
  * Created by isabe on 2/17/2018.
  */
 
-public class MovieDbJSONUtils {
+@SuppressWarnings("DefaultFileTemplate")
+class MovieDbJSONUtils {
     private static final String MD_LIST = "results";
     private static final String MD_ORIGINAL_TITLE = "original_title";
     private static final String MD_POSTER_IMAGE_THUMBNAIL = "poster_path";
@@ -39,11 +39,9 @@ public class MovieDbJSONUtils {
     private static final String MD_NAME_VIDEO = "name";
     private static final String MD_VIDEO_SEARCH_KEY = "key";
 
-    public static final String BASE_MOVIE_DB_ULR = "http://api.themoviedb.org/3/movie/";
-    public static final String LOG_TAG = MovieDbJSONUtils.class.getSimpleName();
+    private static final String LOG_TAG = MovieDbJSONUtils.class.getSimpleName();
 
-    public static List<Movie> getMovieDetailsFromJson(String movieJsonString)
-            throws JSONException {
+    public static List<Movie> getMovieDetailsFromJson(String movieJsonString) {
         if (TextUtils.isEmpty(movieJsonString)) {
             return null;
         }
@@ -94,7 +92,7 @@ public class MovieDbJSONUtils {
 
     }
 
-    public static List<Review> getReviewFromJSON(String movieJSONString) throws JSONException, ParseException {
+    public static List<Review> getReviewFromJSON(String movieJSONString) {
 
         if (TextUtils.isEmpty(movieJSONString)) {
             return null;
@@ -127,7 +125,7 @@ public class MovieDbJSONUtils {
 
     }
 
-    public static List<Trailer> getTrailerFromJSON(String movieJSONString) throws JSONException, ParseException {
+    public static List<Trailer> getTrailerFromJSON(String movieJSONString) {
 
         if (TextUtils.isEmpty(movieJSONString)) {
             return null;

@@ -14,8 +14,8 @@ import java.util.List;
  * Created by isabe on 3/26/2018.
  */
 
+@SuppressWarnings("DefaultFileTemplate")
 public class TrailerLoader extends AsyncTaskLoader<List<Trailer>> {
-    private static final String LOG_TAG = TrailerLoader.class.getSimpleName();
     private final String mUrl;
 
     public TrailerLoader(Context context, String url) {

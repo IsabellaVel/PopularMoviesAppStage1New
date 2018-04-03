@@ -9,12 +9,13 @@ import android.util.Log;
  * Created by isabe on 3/17/2018.
  */
 
+@SuppressWarnings("DefaultFileTemplate")
 public class MovieDbHelper extends SQLiteOpenHelper {
-    public static final String LOG_TAG = MovieDbHelper.class.getSimpleName();
+    private static final String LOG_TAG = MovieDbHelper.class.getSimpleName();
 
     //name & version
     private static final String DATABASE_NAME = "movies.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 5;
 
     public MovieDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -38,7 +39,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
     // Upgrade database when version is changed.
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-        Log.w(LOG_TAG, "Upgarding database from version " + oldVersion + " to " + newVersion +
+        Log.w(LOG_TAG, "Upgrading database from version " + oldVersion + " to " + newVersion +
                 ". OLD DATA WILL BE DESTROYED");
 
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MovieContract.MovieEntry.TABLE_MOVIES);

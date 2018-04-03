@@ -17,8 +17,8 @@ import static com.example.isabe.popularmovies.MainActivityFragment.MOVIE_DB_URL_
  * Created by isabe on 2/21/2018.
  */
 
+@SuppressWarnings("DefaultFileTemplate")
 public class SettingsActivity extends AppCompatActivity {
-    private String orderKey = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -21,12 +21,10 @@ import android.widget.GridView;
 import android.widget.Toast;
 
 import com.example.isabe.popularmovies.adapters.MovieAdapter;
-import com.example.isabe.popularmovies.adapters.TrailerAdapter;
 import com.example.isabe.popularmovies.data.MovieContract;
 import com.example.isabe.popularmovies.data.MovieDbHelper;
 import com.example.isabe.popularmovies.loaders.MovieLoader;
 import com.example.isabe.popularmovies.objects.Movie;
-import com.example.isabe.popularmovies.objects.Trailer;
 import com.example.isabe.popularmovies.utilities.NetworkUtils;
 
 import java.net.URL;
@@ -39,7 +37,7 @@ import static com.example.isabe.popularmovies.utilities.NetworkUtils.apiKey;
 public class MainActivityFragment extends Fragment {
 
     public static final int LOADER_ID = 11;
-    public static final int LOADER_CURSOR_ID = 14;
+    private static final int LOADER_CURSOR_ID = 14;
 
     public static final String DEFAULT_POPULAR_MOVIE_DB_URL = "http://api.themoviedb.org/3/movie/popular?";
     public static final String MOVIE_DB_URL_TOP_RATED = "http://api.themoviedb.org/3/movie/top_rated?";
@@ -50,7 +48,7 @@ public class MainActivityFragment extends Fragment {
     private List<Movie> movieList = new ArrayList<>();
     private Movie mMovie;
 
-    public String[] FAVORITES_PROJECTION = {
+    private final String[] FAVORITES_PROJECTION = {
             MovieContract.MovieEntry._ID,
             MovieContract.MovieEntry.DB_MOVIE_ID,
             MovieContract.MovieEntry.DB_TITLE,
@@ -60,8 +58,8 @@ public class MainActivityFragment extends Fragment {
             MovieContract.MovieEntry.DB_VOTE_AVERAGE
     };
 
-    public GridView gridView;
-    public View rootView;
+    private GridView gridView;
+    private View rootView;
 
     private android.support.v4.app.LoaderManager.LoaderCallbacks mListMovieLoader =
             new LoaderManager.LoaderCallbacks<List<Movie>>() {
@@ -126,12 +124,12 @@ public class MainActivityFragment extends Fragment {
                             String currentTitle = cursor.getString(titleColumnIndex);
                             //String currentPosterPath = mCursor.getString(posterColumnIndex);
                             String currentBackdropPath = cursor.getString(backdropColumnIndex);
-                            //String currentReleaseDate = mCursor.getString(releasedDateColumnIndex);
+                            String currentReleaseDate = cursor.getString(releasedDateColumnIndex);
                             String currentSynopsis = cursor.getString(synopsisColumnIndex);
                             String currentVoteAverage = cursor.getString(voteColumnIndex);
 
                             mMovie = new Movie(currentBackdropPath,
-                                    currentSynopsis, currentTitle, currentID, currentVoteAverage);
+                                    currentSynopsis, currentTitle, currentID, currentReleaseDate, currentVoteAverage);
 
                             movieList.add(mMovie);
                             //mMovieAdapter.addAll(movieList);
@@ -149,7 +147,7 @@ public class MainActivityFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
-            movieList = savedInstanceState.getParcelableArrayList("movieData");
+            movieList = savedInstanceState.getParcelableArrayList("MOVIE_DETAILS");
         }
     }
 
@@ -158,7 +156,7 @@ public class MainActivityFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList("movieData", (ArrayList<? extends Parcelable>) movieList);
+        outState.putParcelableArrayList("MOVIE_DETAILS", (ArrayList<? extends Parcelable>) movieList);
         super.onSaveInstanceState(outState);
     }
 
@@ -190,17 +188,6 @@ public class MainActivityFragment extends Fragment {
                 Intent showDetailsIntent = new Intent(getActivity(), DetailsActivity.class);
 
                 showDetailsIntent.putExtra("MOVIE_DETAILS", thisMovie);
-
-                /**Bundle bundleExtra = new Bundle();
-                 bundleExtra.putString(getString(R.string.original_title), originalTitle);
-                 bundleExtra.putString(getString(R.string.image_path_string), moviePoster);
-                 bundleExtra.putString(getString(R.string.string_date_release), releaseDate);
-                 bundleExtra.putString(getString(R.string.vote_string), voteAverage);
-                 bundleExtra.putString(getString(R.string.movie_summary), movieSynopsis);
-                 bundleExtra.putInt(getString(R.string.movie_string_id), movieID);
-                 bundleExtra.putString(getString(R.string.backdrop_string_path), movieBackdrop);
-                 showDetailsIntent.putExtras(bundleExtra);
-                 **/
                 startActivity(showDetailsIntent);
 
             }
@@ -245,7 +232,7 @@ public class MainActivityFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    public void deleteData() {
+    private void deleteData() {
         int numDeleted = getActivity().getContentResolver()
                 .delete(MovieContract.MovieEntry.CONTENT_URI, null, null);
         Toast.makeText(getContext(), "Database deleted: " + numDeleted + " items.", Toast.LENGTH_LONG).show();

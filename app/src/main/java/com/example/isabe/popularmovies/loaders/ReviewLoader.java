@@ -15,9 +15,9 @@ import org.json.JSONException;
  * Created by isabe on 3/25/2018.
  */
 
+@SuppressWarnings("DefaultFileTemplate")
 public class ReviewLoader extends AsyncTaskLoader<List<Review>> {
 
-    private static final String LOG_TAG = ReviewLoader.class.getSimpleName();
     private final String mUrl;
 
     public ReviewLoader(Context context, String url) {

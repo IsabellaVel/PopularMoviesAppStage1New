@@ -7,7 +7,6 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.ProxyInfo;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,15 +15,14 @@ import android.support.annotation.Nullable;
  * Created by isabe on 3/17/2018.
  */
 
+@SuppressWarnings("DefaultFileTemplate")
 public class MoviesProvider extends ContentProvider {
-    private static final String LOG_TAG = MoviesProvider.class.getSimpleName();
     private static final UriMatcher sUriMatcher = buildUriMatcher();
-    public MovieDbHelper mOpenMoviesHelper;
+    private MovieDbHelper mOpenMoviesHelper;
 
     // Codes for the UriMatcher //////
     private static final int MOVIE_MATCHER = 100;
     private static final int MOVIE_WITH_ID = 200;
-    public Cursor retCursor;
 
     private static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -132,7 +130,7 @@ public class MoviesProvider extends ContentProvider {
                 break;
             case MOVIE_WITH_ID:
                 numDeleted = db.delete(MovieContract.MovieEntry.TABLE_MOVIES,
-                        MovieContract.MovieEntry._ID + " = ?",
+                        MovieContract.MovieEntry.DB_MOVIE_ID + "=?",
                         new String[]{String.valueOf(ContentUris.parseId(uri))});
                 //reset _ID
                 db.execSQL("DELETE FROM SQL_SEQUENCE WHERE NAME = '" +
@@ -149,7 +147,7 @@ public class MoviesProvider extends ContentProvider {
     public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String selection,
                       @Nullable String[] selectionArgs) {
         SQLiteDatabase db = mOpenMoviesHelper.getWritableDatabase();
-        int numUpdated = 0;
+        int numUpdated;
 
         if (contentValues == null) {
             throw new IllegalArgumentException("Cannot have null content values.");
@@ -179,3 +177,5 @@ public class MoviesProvider extends ContentProvider {
         return numUpdated;
     }
 }
+
+

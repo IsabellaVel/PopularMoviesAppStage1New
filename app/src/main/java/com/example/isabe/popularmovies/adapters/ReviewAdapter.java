@@ -18,15 +18,15 @@ import java.util.List;
  * Created by isabe on 3/24/2018.
  */
 
+@SuppressWarnings("DefaultFileTemplate")
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder> {
-
     private Context mContext;
-    private List<Review> mMovieListReviews;
+    private final List<Review> mMovieListReviews;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        private TextView mReviewAuthorTv;
-        private TextView mReviewContentTv;
+        private final TextView mReviewAuthorTv;
+        private final TextView mReviewContentTv;
 
         public ViewHolder(View itemView) {
             super(itemView);

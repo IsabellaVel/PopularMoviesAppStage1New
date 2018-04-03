@@ -7,12 +7,13 @@ import android.os.Parcelable;
  * Created by isabe on 2/17/2018.
  */
 
+@SuppressWarnings("DefaultFileTemplate")
 public class Movie implements Parcelable {
     private final String mOriginalTitle;
-    private String mReleaseDate;
-    private String mVoteAverage;
-    private String mOverviewMovie;
-    private String mImageThumbnail;
+    private final String mReleaseDate;
+    private final String mVoteAverage;
+    private final String mOverviewMovie;
+    private final String mImageThumbnail;
     private String mBackdropPath;
     private final int mMovieTMDBId;
 
@@ -27,8 +28,9 @@ public class Movie implements Parcelable {
         this.mMovieTMDBId = movieId;
     }
 
-    public Movie(String imageThumbnail, String overview, String title, int movieId, String vote) {
+    public Movie(String imageThumbnail, String overview, String title, int movieId, String date, String vote) {
         this.mOriginalTitle = title;
+        this.mReleaseDate = date;
         this.mVoteAverage = vote;
         this.mOverviewMovie = overview;
         this.mImageThumbnail = imageThumbnail;
@@ -39,12 +41,24 @@ public class Movie implements Parcelable {
         mOriginalTitle = in.readString();
         mReleaseDate = in.readString();
         mOverviewMovie = in.readString();
-        mImageThumbnail = in.readString();
         mVoteAverage = in.readString();
+        mImageThumbnail = in.readString();
         mBackdropPath = in.readString();
         mMovieTMDBId = in.readInt();
 
     }
+
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 
     @Override
     public int describeContents() {
@@ -61,24 +75,12 @@ public class Movie implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(mOriginalTitle);
         parcel.writeString(mReleaseDate);
-        parcel.writeString(mVoteAverage);
         parcel.writeString(mOverviewMovie);
+        parcel.writeString(mVoteAverage);
         parcel.writeString(mImageThumbnail);
         parcel.writeString(mBackdropPath);
         parcel.writeInt(mMovieTMDBId);
     }
-
-    public final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
-        @Override
-        public Movie createFromParcel(Parcel in) {
-            return new Movie(in);
-        }
-
-        @Override
-        public Movie[] newArray(int size) {
-            return new Movie[size];
-        }
-    };
 
     public String getmOriginalTitle() {
         return mOriginalTitle;

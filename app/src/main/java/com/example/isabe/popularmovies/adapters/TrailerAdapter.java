@@ -4,7 +4,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.example.isabe.popularmovies.DetailsActivity;
 import com.example.isabe.popularmovies.R;
 import com.example.isabe.popularmovies.objects.Trailer;
 import com.squareup.picasso.Picasso;
@@ -25,11 +23,12 @@ import static com.example.isabe.popularmovies.DetailsActivity.YOUTUBE_LINK_VIDEO
  * Created by isabe on 3/26/2018.
  */
 
+@SuppressWarnings("DefaultFileTemplate")
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHolder> {
-    private List<Trailer> mMovieListTrailer;
-    private String LOG_TAG = TrailerAdapter.class.getSimpleName();
+    private final List<Trailer> mMovieListTrailer;
+    private final String LOG_TAG = TrailerAdapter.class.getSimpleName();
 
-    private Context mContext;
+    private final Context mContext;
     private OnItemClicked onClick;
 
     public interface OnItemClicked {
@@ -81,14 +80,12 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        private ImageView mMovieTrailerImage;
-        private ImageView mPlayIcon;
+        private final ImageView mMovieTrailerImage;
+        private final ImageView mPlayIcon;
 
 
         public ViewHolder(View itemView) {
             super(itemView);
-            mView = itemView;
 
             mMovieTrailerImage = itemView.findViewById(R.id.trailer_video);
             mPlayIcon = itemView.findViewById(R.id.play_icon);

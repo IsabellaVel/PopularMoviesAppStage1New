@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.isabe.popularmovies">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -21,7 +22,8 @@
         </activity>
         <activity android:name=".SettingsActivity" />
         <activity android:name=".DetailsActivity"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity"
+            tools:targetApi="jelly_bean" />
 
         <provider
             android:name=".data.MoviesProvider"
