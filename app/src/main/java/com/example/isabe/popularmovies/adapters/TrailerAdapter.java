@@ -25,10 +25,10 @@ import static com.example.isabe.popularmovies.DetailsActivity.YOUTUBE_LINK_VIDEO
 
 @SuppressWarnings("DefaultFileTemplate")
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHolder> {
-    private final List<Trailer> mMovieListTrailer;
-    private final String LOG_TAG = TrailerAdapter.class.getSimpleName();
+    private List<Trailer> mMovieListTrailer;
+    private String LOG_TAG = TrailerAdapter.class.getSimpleName();
 
-    private final Context mContext;
+    private Context mContext;
     private OnItemClicked onClick;
 
     public interface OnItemClicked {
@@ -50,7 +50,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHold
     @Override
     public void onBindViewHolder(TrailerAdapter.ViewHolder holder, final int position) {
         final Trailer trailer = mMovieListTrailer.get(position);
-        final String trailerImagePath = trailer.getmKeySearchImage();
+        String trailerImagePath = trailer.getmKeySearchImage();
 
         Picasso.with(mContext)
                 .load(trailerImagePath)
@@ -80,12 +80,14 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private final ImageView mMovieTrailerImage;
-        private final ImageView mPlayIcon;
+        public final View mView;
+        private ImageView mMovieTrailerImage;
+        private ImageView mPlayIcon;
 
 
         public ViewHolder(View itemView) {
             super(itemView);
+            mView = itemView;
 
             mMovieTrailerImage = itemView.findViewById(R.id.trailer_video);
             mPlayIcon = itemView.findViewById(R.id.play_icon);

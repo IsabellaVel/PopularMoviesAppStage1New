@@ -3,6 +3,7 @@ package com.example.isabe.popularmovies.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import com.example.isabe.popularmovies.R;
 import com.example.isabe.popularmovies.objects.Movie;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,6 +57,11 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
 
         return gridViewItems;
     }
+
+    public ArrayList setMovie(ArrayList<Movie> movieArrayList) {
+
+        return movieArrayList;
+       }
 
     public void swapCursor(Cursor newCursor) {
         if (mCursor != null) mCursor.close();

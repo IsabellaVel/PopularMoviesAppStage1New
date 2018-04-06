@@ -10,8 +10,8 @@ import android.os.Parcelable;
 @SuppressWarnings("DefaultFileTemplate")
 public class Review implements Parcelable {
     private String mReviewUrl;
-    private final String mReviewAuthor;
-    private final String mReviewContent;
+    private String mReviewAuthor;
+    private String mReviewContent;
 
     public Review(String author, String content, String mReviewUrl) {
         mReviewAuthor = author;

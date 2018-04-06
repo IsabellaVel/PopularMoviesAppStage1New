@@ -66,7 +66,7 @@ public final class NetworkUtils {
         } catch (IOException e) {
             Log.e(LOG_TAG, "Problem making the HTTP request.", e);
         }
-        List<Trailer> movieTrailerList;
+        List<Trailer> movieTrailerList = null;
         movieTrailerList = MovieDbJSONUtils.getTrailerFromJSON(jsonResponse);
         return movieTrailerList;
     }

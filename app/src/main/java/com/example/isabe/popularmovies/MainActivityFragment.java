@@ -1,5 +1,6 @@
 package com.example.isabe.popularmovies;
 
+import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.isabe.popularmovies.adapters.MovieAdapter;
@@ -28,6 +30,7 @@ import com.example.isabe.popularmovies.objects.Movie;
 import com.example.isabe.popularmovies.utilities.NetworkUtils;
 
 import java.net.URL;
+import java.nio.BufferUnderflowException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,12 +50,16 @@ public class MainActivityFragment extends Fragment {
     private MovieAdapter mMovieAdapter;
     private List<Movie> movieList = new ArrayList<>();
     private Movie mMovie;
+    public int menuSelectionId;
+    MenuItem menuItem;
+    private final static String MENU_CHOSEN = "selected";
 
-    private final String[] FAVORITES_PROJECTION = {
+    private String[] FAVORITES_PROJECTION = {
             MovieContract.MovieEntry._ID,
             MovieContract.MovieEntry.DB_MOVIE_ID,
             MovieContract.MovieEntry.DB_TITLE,
             MovieContract.MovieEntry.DB_BACKDROP_PATH,
+            MovieContract.MovieEntry.DB_POSTER_PATH,
             MovieContract.MovieEntry.DB_SYNOPSIS,
             MovieContract.MovieEntry.DB_RELEASE_DATE,
             MovieContract.MovieEntry.DB_VOTE_AVERAGE
@@ -106,8 +113,8 @@ public class MainActivityFragment extends Fragment {
                     mMovieAdapter.swapCursor(cursor);
                     MovieDbHelper mOpenMoviesHelper = new MovieDbHelper(getActivity());
 
-                    cursor = mOpenMoviesHelper.getReadableDatabase().query(MovieContract.MovieEntry.TABLE_MOVIES,
-                            FAVORITES_PROJECTION, null, null, null, null, null);
+                    cursor = getActivity().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
+                            FAVORITES_PROJECTION, null, null, null);
                     int primaryKeyColumnIndex = cursor.getColumnIndex(MovieContract.MovieEntry._ID);
                     int idColumnIndex = cursor.getColumnIndex(MovieContract.MovieEntry.DB_MOVIE_ID);
                     int titleColumnIndex = cursor.getColumnIndex(MovieContract.MovieEntry.DB_TITLE);
@@ -122,14 +129,14 @@ public class MainActivityFragment extends Fragment {
                             int primaryKeyID = cursor.getInt(primaryKeyColumnIndex);
                             int currentID = cursor.getInt(idColumnIndex);
                             String currentTitle = cursor.getString(titleColumnIndex);
-                            //String currentPosterPath = mCursor.getString(posterColumnIndex);
+                            String currentPosterPath = cursor.getString(posterColumnIndex);
                             String currentBackdropPath = cursor.getString(backdropColumnIndex);
                             String currentReleaseDate = cursor.getString(releasedDateColumnIndex);
                             String currentSynopsis = cursor.getString(synopsisColumnIndex);
                             String currentVoteAverage = cursor.getString(voteColumnIndex);
 
-                            mMovie = new Movie(currentBackdropPath,
-                                    currentSynopsis, currentTitle, currentID, currentReleaseDate, currentVoteAverage);
+                            mMovie = new Movie(currentTitle, currentReleaseDate, currentSynopsis, currentPosterPath,
+                                    currentVoteAverage, currentBackdropPath, currentID);
 
                             movieList.add(mMovie);
                             //mMovieAdapter.addAll(movieList);
@@ -156,21 +163,25 @@ public class MainActivityFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList("MOVIE_DETAILS", (ArrayList<? extends Parcelable>) movieList);
         super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("MOVIE_DETAILS", (ArrayList<? extends Parcelable>) movieList);
+        outState.putInt(MENU_CHOSEN, menuSelectionId);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-
-        mMovieAdapter = new MovieAdapter(getActivity(), movieList);
-
         gridView = rootView.findViewById(R.id.movies_grid);
+        mMovieAdapter = new MovieAdapter(getActivity(), movieList);
+        /**if (savedInstanceState != null && (savedInstanceState.
+         getParcelableArrayList("MOVIE_DETAILS") != null)) {
+         movieList = savedInstanceState.getParcelableArrayList("MOVIE_DETAILS");
+         **/
+
         gridView.setAdapter(mMovieAdapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -192,15 +203,68 @@ public class MainActivityFragment extends Fragment {
 
             }
         });
+
         android.support.v4.app.LoaderManager loaderManager = getLoaderManager();
-        loaderManager.initLoader(LOADER_ID, null, mListMovieLoader);
+        if (savedInstanceState != null) {
+            menuSelectionId = savedInstanceState.getInt(MENU_CHOSEN);
+            movieList = savedInstanceState.getParcelableArrayList("MOVIE_DETAILS");
+            switch (menuSelectionId) {
+                case R.id.top_rated:
+                    movieDisplayStyleLink = MOVIE_DB_URL_TOP_RATED;
+                    getLoaderManager().initLoader(0, null, mListMovieLoader);
+                    break;
+                case R.id.favorites_id:
+                    Log.i(LOG_TAG, "Menu selection id is " + menuSelectionId);
+                    getActivity().getSupportLoaderManager().initLoader(LOADER_CURSOR_ID, null, mLoaderCursor);
+                    break;
+                default:
+                    movieDisplayStyleLink = DEFAULT_POPULAR_MOVIE_DB_URL;
+                    getLoaderManager().initLoader(LOADER_ID, null, mListMovieLoader);
+            }
+        }else {
+            loaderManager.initLoader(LOADER_ID, null, mListMovieLoader);
+        }
         return rootView;
 
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            movieList = savedInstanceState.getParcelableArrayList("MOVIE_DETAILS");
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(LOG_TAG, "MainActivityFragment onResume");
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         getActivity().getMenuInflater().inflate(R.menu.menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
+        switch (menuSelectionId) {
+            case R.id.most_popular:
+                menuItem = (MenuItem) menu.findItem(R.id.most_popular);
+                menuItem.setChecked(true);
+                movieDisplayStyleLink = DEFAULT_POPULAR_MOVIE_DB_URL;
+                getLoaderManager().restartLoader(LOADER_ID, null, mListMovieLoader);
+                break;
+            case R.id.top_rated:
+                menuItem = (MenuItem) menu.findItem(R.id.top_rated);
+                menuItem.setChecked(true);
+                Log.i(LOG_TAG, "Top rated selection saved");
+                break;
+
+            case R.id.favorites_id:
+                menuItem = (MenuItem) menu.findItem(R.id.favorites_id);
+                menuItem.setChecked(true);
+                Log.i(LOG_TAG, "Favorites selection saved.");
+                break;
+
+        }
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -214,16 +278,19 @@ public class MainActivityFragment extends Fragment {
             case R.id.top_rated:
                 movieDisplayStyleLink = MOVIE_DB_URL_TOP_RATED;
                 getLoaderManager().restartLoader(0, null, mListMovieLoader);
-                Log.e(LOG_TAG, getString(R.string.log_top_rated_menu));
+                menuSelectionId = id;
+                Log.e(LOG_TAG, getString(R.string.log_top_rated_menu) + id);
                 break;
             case R.id.most_popular:
                 movieDisplayStyleLink = DEFAULT_POPULAR_MOVIE_DB_URL;
                 getLoaderManager().restartLoader(LOADER_ID, null, mListMovieLoader);
+                menuSelectionId = id;
                 break;
             case R.id.favorites_id:
                 // getLoaderManager().destroyLoader(LOADER_ID);
                 getActivity().getSupportLoaderManager().restartLoader(LOADER_CURSOR_ID, null, mLoaderCursor);
-                Log.e(LOG_TAG, getString(R.string.favorites_chosen));
+                menuSelectionId = id;
+                Log.e(LOG_TAG, getString(R.string.favorites_chosen) + id);
                 break;
             case R.id.delete_all:
                 deleteData();

@@ -9,11 +9,11 @@ import android.os.Parcelable;
 
 @SuppressWarnings("DefaultFileTemplate")
 public class Trailer implements Parcelable {
-    private final String mNameTrailer;
-    private final String mTrailerSize;
-    private final String mTrailerSite;
-    private final String mYoutubeImageUrl = "http://img.youtube.com/vi/";
-    private final String mKeySearchVideo;
+    private String mNameTrailer;
+    private String mTrailerSize;
+    private String mTrailerSite;
+    private String mYoutubeImageUrl = "http://img.youtube.com/vi/";
+    private String mKeySearchVideo;
 
     public Trailer(String name, String size, String site, String key) {
         mNameTrailer = name;

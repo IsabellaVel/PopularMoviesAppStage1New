@@ -57,7 +57,8 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
     private List<Trailer> movieTrailers = new ArrayList<>();
     private RecyclerView mRecyclerReviews;
     private RecyclerView mRecyclerTrailers;
-
+    private TrailerAdapter mTrailerAdapter;
+    private RecyclerView.Adapter mReviewAdapter;
 
     private static final String DEFAULT_REVIEW_MD_LINK = "http://api.themoviedb.org/3/movie/";
     public static final String YOUTUBE_LINK_VIDEO = "https://www.youtube.com/watch?v=";
@@ -81,6 +82,7 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
                 public void onLoadFinished(Loader<List<Review>> loader, List<Review> reviewData) {
                     if (reviewData != null && !reviewData.isEmpty()) {
                         movieReviews.addAll(reviewData);
+                        setupRecyclerView(mRecyclerReviews);
                         Log.e(LOG_TAG, "Successful Review LoadFinished.");
                     }
                 }
@@ -91,7 +93,7 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
                 }
             };
 
-    private final android.support.v4.app.LoaderManager.LoaderCallbacks mListMovieTrailers =
+    private android.support.v4.app.LoaderManager.LoaderCallbacks mListMovieTrailers =
             new LoaderManager.LoaderCallbacks<List<Trailer>>() {
 
                 @Override
@@ -110,6 +112,7 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
                 public void onLoadFinished(Loader<List<Trailer>> loader, List<Trailer> trailerList) {
                     if (trailerList != null && !trailerList.isEmpty()) {
                         movieTrailers.addAll(trailerList);
+                        setupRecyclerTrailersView(mRecyclerTrailers);
                         Log.e(LOG_TAG, "Successful TrailerLoadFinished.");
                     }
                 }
@@ -121,7 +124,7 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
             };
 
 
-    protected void onCreate(final Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.details_movie);
 
@@ -129,7 +132,9 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-
+        if (savedInstanceState != null) {
+            mMovieDetails = (Movie) savedInstanceState.getParcelable("MOVIE_DETAILS");
+        }
         mMovieDetails = getIntent().getExtras().getParcelable("MOVIE_DETAILS");
 
         ImageView mMoviePoster = findViewById(R.id.detail_backdrop_image);
@@ -180,6 +185,19 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
         showTrailers();
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putParcelable("MOVIE_DETAILS", mMovieDetails);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.i(LOG_TAG, "Inside on RestoreInstanceState");
+        mMovieDetails = (Movie) savedInstanceState.getParcelable("MOVIE_DETAILS");
+    }
+
     private void trackFavorites() {
         final FloatingActionButton fab = findViewById(R.id.fab);
         isFavorite = false;
@@ -192,7 +210,7 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
                 if (isFavorite(movieIdFromTMDB)) {
                     booleanToInt = 1;
                     fab.setImageResource(R.drawable.if_heart_1055045);
-                }else {
+                } else {
                     booleanToInt = 0;
                     fab.setImageResource(R.drawable.favorite_heart_button);
                 }
@@ -207,11 +225,11 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
                         isFavorite = true;
                         break;
                     case 1:
-                            fab.setImageResource(R.drawable.favorite_heart_button);
-                            deleteItem();
-                            Log.i(LOG_TAG, "Deleted from favs.");
-                            break;
-                        }
+                        fab.setImageResource(R.drawable.favorite_heart_button);
+                        deleteItem();
+                        Log.i(LOG_TAG, "Deleted from favs.");
+                        break;
+                }
 
             }
         });

@@ -21,12 +21,12 @@ import java.util.List;
 @SuppressWarnings("DefaultFileTemplate")
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder> {
     private Context mContext;
-    private final List<Review> mMovieListReviews;
+    private List<Review> mMovieListReviews;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        private final TextView mReviewAuthorTv;
-        private final TextView mReviewContentTv;
+        private TextView mReviewAuthorTv;
+        private TextView mReviewContentTv;
 
         public ViewHolder(View itemView) {
             super(itemView);

@@ -10,30 +10,30 @@ import android.os.Parcelable;
 @SuppressWarnings("DefaultFileTemplate")
 public class Movie implements Parcelable {
     private final String mOriginalTitle;
-    private final String mReleaseDate;
-    private final String mVoteAverage;
-    private final String mOverviewMovie;
-    private final String mImageThumbnail;
+    private String mReleaseDate;
+    private String mVoteAverage;
+    private String mOverviewMovie;
+    private String mImageThumbnail;
     private String mBackdropPath;
     private final int mMovieTMDBId;
 
     public Movie(String originalTitle, String releasedOnDate, String overview, String imageThumbnail, String averageVote,
                  String backdropPath, int movieId) {
-        this.mReleaseDate = releasedOnDate;
         this.mOriginalTitle = originalTitle;
-        this.mVoteAverage = averageVote;
+        this.mReleaseDate = releasedOnDate;
         this.mOverviewMovie = overview;
         this.mImageThumbnail = imageThumbnail;
+        this.mVoteAverage = averageVote;
         this.mBackdropPath = backdropPath;
         this.mMovieTMDBId = movieId;
     }
 
-    public Movie(String imageThumbnail, String overview, String title, int movieId, String date, String vote) {
+    public Movie(String imageBackdrop, String overview, String title, int movieId, String date, String vote) {
         this.mOriginalTitle = title;
         this.mReleaseDate = date;
         this.mVoteAverage = vote;
         this.mOverviewMovie = overview;
-        this.mImageThumbnail = imageThumbnail;
+        this.mImageThumbnail = imageBackdrop;
         this.mMovieTMDBId = movieId;
     }
 
