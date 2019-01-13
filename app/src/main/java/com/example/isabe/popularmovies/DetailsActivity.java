@@ -51,6 +51,7 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
     private int movieIdFromTMDB;
     private int booleanToInt;
     private Boolean isFavorite;
+    private int mPosition;
 
 
     private List<Review> movieReviews = new ArrayList<Review>();
@@ -189,12 +190,14 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
     protected void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putParcelable("MOVIE_DETAILS", mMovieDetails);
+        savedInstanceState.putInt("Scroll position", mPosition);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         Log.i(LOG_TAG, "Inside on RestoreInstanceState");
+        mPosition = (int) savedInstanceState.getInt("Scroll position");
         mMovieDetails = (Movie) savedInstanceState.getParcelable("MOVIE_DETAILS");
     }
 
@@ -359,6 +362,6 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
 
     @Override
     public void onItemClick(int position) {
-
+    mPosition = position;
     }
 }
