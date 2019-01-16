@@ -3,14 +3,19 @@ package com.example.isabe.popularmovies.objects;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by isabe on 3/24/2018.
  */
 
 @SuppressWarnings("DefaultFileTemplate")
 public class Review implements Parcelable {
+    @SerializedName("url")
     private String mReviewUrl;
+    @SerializedName("author")
     private String mReviewAuthor;
+    @SerializedName("content")
     private String mReviewContent;
 
     public Review(String author, String content, String mReviewUrl) {

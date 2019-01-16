@@ -3,19 +3,29 @@ package com.example.isabe.popularmovies.objects;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by isabe on 2/17/2018.
  */
 
 @SuppressWarnings("DefaultFileTemplate")
 public class Movie implements Parcelable {
-    private final String mOriginalTitle;
+
+    @SerializedName("original_title")
+    private String mOriginalTitle;
+    @SerializedName("release_date")
     private String mReleaseDate;
+    @SerializedName("vote_average")
     private String mVoteAverage;
+    @SerializedName("overview")
     private String mOverviewMovie;
+    @SerializedName("poster_path")
     private String mImageThumbnail;
-    private String mBackdropPath;
-    private final int mMovieTMDBId;
+    @SerializedName("backdrop_path")
+    public String mBackdropPath;
+    @SerializedName("id")
+    private int mMovieTMDBId;
 
     public Movie(String originalTitle, String releasedOnDate, String overview, String imageThumbnail, String averageVote,
                  String backdropPath, int movieId) {
@@ -109,4 +119,34 @@ public class Movie implements Parcelable {
     public int getmMovieTMDBId() {
         return mMovieTMDBId;
     }
+
+    public void setmBackdropPath(String mBackdropPath) {
+        this.mBackdropPath = mBackdropPath;
+    }
+
+    public void setmImageThumbnail(String mImageThumbnail) {
+        this.mImageThumbnail = mImageThumbnail;
+    }
+
+    public void setmOverviewMovie(String mOverviewMovie) {
+        this.mOverviewMovie = mOverviewMovie;
+    }
+
+    public void setmReleaseDate(String mReleaseDate) {
+        this.mReleaseDate = mReleaseDate;
+    }
+
+    public void setmVoteAverage(String mVoteAverage) {
+        this.mVoteAverage = mVoteAverage;
+    }
+
+    public void setmOriginalTitle(String mOriginalTitle) {
+        this.mOriginalTitle = mOriginalTitle;
+    }
+
+    public void setmMovieTMDBId(int mMovieTMDBId) {
+        this.mMovieTMDBId = mMovieTMDBId;
+    }
+
+
 }

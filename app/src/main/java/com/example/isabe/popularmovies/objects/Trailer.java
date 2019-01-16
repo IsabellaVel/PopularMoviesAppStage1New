@@ -3,17 +3,23 @@ package com.example.isabe.popularmovies.objects;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by isabe on 3/24/2018.
  */
 
 @SuppressWarnings("DefaultFileTemplate")
 public class Trailer implements Parcelable {
+    @SerializedName("name")
     private String mNameTrailer;
+    @SerializedName("size")
     private String mTrailerSize;
+    @SerializedName("site")
     private String mTrailerSite;
     private String mYoutubeImageUrl = "http://img.youtube.com/vi/";
-    private String mKeySearchVideo;
+    @SerializedName("key")
+    public String mKeySearchVideo;
 
     public Trailer(String name, String size, String site, String key) {
         mNameTrailer = name;
