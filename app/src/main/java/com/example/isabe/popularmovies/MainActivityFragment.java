@@ -216,8 +216,8 @@ public class MainActivityFragment extends Fragment {
             switch (menuSelectionId) {
                 case R.id.top_rated:
                     movieController.startTopRated();
-                    movieDisplayStyleLink = MOVIE_DB_URL_TOP_RATED;
-                    getLoaderManager().initLoader(0, null, mListMovieLoader);
+                    //movieDisplayStyleLink = MOVIE_DB_URL_TOP_RATED;
+                    //getLoaderManager().initLoader(0, null, mListMovieLoader);
                     break;
                 case R.id.favorites_id:
                     Log.i(LOG_TAG, "Menu selection id is " + menuSelectionId);
@@ -225,12 +225,13 @@ public class MainActivityFragment extends Fragment {
                     break;
                 default:
                     movieController.start();
-                    movieDisplayStyleLink = DEFAULT_POPULAR_MOVIE_DB_URL;
-                    getLoaderManager().initLoader(LOADER_ID, null, mListMovieLoader);
+                    //movieDisplayStyleLink = DEFAULT_POPULAR_MOVIE_DB_URL;
+                    //getLoaderManager().initLoader(LOADER_ID, null, mListMovieLoader);
             }
         }else {
             movieController.start();
-            loaderManager.initLoader(LOADER_ID, null, mListMovieLoader);
+            Log.i(LOG_TAG, "Movie controller is started for popular movies.");
+            //loaderManager.initLoader(LOADER_ID, null, mListMovieLoader);
         }
         return rootView;
 
@@ -258,8 +259,8 @@ public class MainActivityFragment extends Fragment {
                 menuItem = (MenuItem) menu.findItem(R.id.most_popular);
                 menuItem.setChecked(true);
                 movieController.start();
-                movieDisplayStyleLink = DEFAULT_POPULAR_MOVIE_DB_URL;
-                getLoaderManager().restartLoader(LOADER_ID, null, mListMovieLoader);
+                //movieDisplayStyleLink = DEFAULT_POPULAR_MOVIE_DB_URL;
+                //getLoaderManager().restartLoader(LOADER_ID, null, mListMovieLoader);
                 break;
             case R.id.top_rated:
                 movieController.startTopRated();
@@ -287,15 +288,15 @@ public class MainActivityFragment extends Fragment {
              **/
             case R.id.top_rated:
                 movieController.startTopRated();
-                movieDisplayStyleLink = MOVIE_DB_URL_TOP_RATED;
-                getLoaderManager().restartLoader(0, null, mListMovieLoader);
+               // movieDisplayStyleLink = MOVIE_DB_URL_TOP_RATED;
+                //getLoaderManager().restartLoader(0, null, mListMovieLoader);
                 menuSelectionId = id;
                 Log.e(LOG_TAG, getString(R.string.log_top_rated_menu) + id);
                 break;
             case R.id.most_popular:
                 movieController.start();
-                movieDisplayStyleLink = DEFAULT_POPULAR_MOVIE_DB_URL;
-                getLoaderManager().restartLoader(LOADER_ID, null, mListMovieLoader);
+                //movieDisplayStyleLink = DEFAULT_POPULAR_MOVIE_DB_URL;
+                //getLoaderManager().restartLoader(LOADER_ID, null, mListMovieLoader);
                 menuSelectionId = id;
                 break;
             case R.id.favorites_id:

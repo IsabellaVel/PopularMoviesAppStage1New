@@ -148,5 +148,7 @@ public class Movie implements Parcelable {
         this.mMovieTMDBId = mMovieTMDBId;
     }
 
-
+    public String movieToString(){
+        return "Movie returned is " + mOriginalTitle + ".";
+    }
 }

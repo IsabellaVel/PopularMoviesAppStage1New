@@ -51,7 +51,7 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
 
         Log.e(LOG_TAG, "Context" + mContext);
 
-        Picasso.with(mContext).
+        Picasso.get().
                 load(moviePosterFullPath)
                 .into(imageViewMovie);
 

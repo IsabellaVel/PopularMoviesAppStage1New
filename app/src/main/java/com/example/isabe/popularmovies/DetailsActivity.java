@@ -151,7 +151,7 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
         String voteFormat = mMovieDetails.getmVoteAverage().concat("/10");
         mVoteAverage.setText(voteFormat);
         String fullImageBackdropPath = "https://image.tmdb.org/t/p/w185" + mMovieDetails.getmBackdropPath();
-        Picasso.with(this).load(fullImageBackdropPath).into(mMoviePoster);
+        Picasso.get().load(fullImageBackdropPath).into(mMoviePoster);
         movieIdFromTMDB = mMovieDetails.getmMovieTMDBId();
         //}
 

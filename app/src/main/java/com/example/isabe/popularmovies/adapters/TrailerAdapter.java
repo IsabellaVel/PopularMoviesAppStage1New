@@ -52,7 +52,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHold
         final Trailer trailer = mMovieListTrailer.get(position);
         String trailerImagePath = trailer.getmKeySearchImage();
 
-        Picasso.with(mContext)
+        Picasso.get()
                 .load(trailerImagePath)
                 .placeholder(R.drawable.movie_icon)
                 .into(holder.mMovieTrailerImage);
