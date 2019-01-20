@@ -5,12 +5,17 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * Created by isabe on 2/17/2018.
  */
 
 @SuppressWarnings("DefaultFileTemplate")
 public class Movie implements Parcelable {
+
+    @SerializedName("results")
+    public List<Movie> movieList;
 
     @SerializedName("original_title")
     private String mOriginalTitle;
@@ -151,4 +156,16 @@ public class Movie implements Parcelable {
     public String movieToString(){
         return "Movie returned is " + mOriginalTitle + ".";
     }
+
+    //items for List<Movie>
+    public List<Movie> getMovieList(){
+        return movieList;
+    }
+    public String toStringList(){
+        return movieList.toString();
+    }
+    public String movieListToString(){
+        return "Movie returned is " + movieList + ".";
+    }
+
 }

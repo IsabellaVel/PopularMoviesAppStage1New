@@ -1,13 +1,12 @@
 package com.example.isabe.popularmovies;
 
-import android.app.Activity;
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -19,29 +18,33 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.isabe.popularmovies.adapters.MovieAdapter;
 import com.example.isabe.popularmovies.data.MovieContract;
 import com.example.isabe.popularmovies.data.MovieDbHelper;
-import com.example.isabe.popularmovies.loaders.MovieLoader;
 import com.example.isabe.popularmovies.objects.Movie;
-import com.example.isabe.popularmovies.utilities.MovieController;
-import com.example.isabe.popularmovies.utilities.NetworkUtils;
+import com.example.isabe.popularmovies.objects.MovieList;
+import com.example.isabe.popularmovies.utilities.MovieAPI;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
-import java.net.URL;
-import java.nio.BufferUnderflowException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.isabe.popularmovies.utilities.NetworkUtils.API_KEY_QUERY;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 import static com.example.isabe.popularmovies.utilities.NetworkUtils.apiKey;
 
 public class MainActivityFragment extends Fragment {
 
     public static final int LOADER_ID = 11;
     private static final int LOADER_CURSOR_ID = 14;
+    static final String BASE_URL = "http://api.themoviedb.org/3/movie/";
 
     public static final String DEFAULT_POPULAR_MOVIE_DB_URL = "http://api.themoviedb.org/3/movie/popular?";
     public static final String MOVIE_DB_URL_TOP_RATED = "http://api.themoviedb.org/3/movie/top_rated?";
@@ -49,14 +52,14 @@ public class MainActivityFragment extends Fragment {
 
     public static String movieDisplayStyleLink = DEFAULT_POPULAR_MOVIE_DB_URL;
     private MovieAdapter mMovieAdapter;
-    private List<Movie> movieList = new ArrayList<>();
     private Movie mMovie;
+    private MovieList mMovieList = new MovieList();
+    private List<Movie> movieList = new ArrayList<Movie>();
     public int menuSelectionId;
     MenuItem menuItem;
+    private Context mContext;
     private final static String MENU_CHOSEN = "selected";
     // set up the movie controller from  Retrofit
-    MovieController movieController = new MovieController();
-
 
     private String[] FAVORITES_PROJECTION = {
             MovieContract.MovieEntry._ID,
@@ -71,33 +74,6 @@ public class MainActivityFragment extends Fragment {
 
     private GridView gridView;
     private View rootView;
-
-    private android.support.v4.app.LoaderManager.LoaderCallbacks mListMovieLoader =
-            new LoaderManager.LoaderCallbacks<List<Movie>>() {
-
-                @Override
-                public Loader<List<Movie>> onCreateLoader(int i, Bundle bundle) {
-                    Uri movieUri = Uri.parse(movieDisplayStyleLink).buildUpon()
-                            .appendQueryParameter(API_KEY_QUERY, apiKey)
-                            .build();
-                    URL movieUrl = NetworkUtils.createUrl((movieUri).toString());
-                    return new MovieLoader(getActivity(), (movieUrl).toString());
-                }
-
-                @Override
-                public void onLoadFinished(Loader<List<Movie>> loader, List<Movie> movieList) {
-                    mMovieAdapter.clear();
-                    if (movieList != null && !movieList.isEmpty()) {
-                        mMovieAdapter.addAll(movieList);
-                        Log.e(LOG_TAG, "Successful LoadFinished.");
-                    }
-                }
-
-                @Override
-                public void onLoaderReset(Loader<List<Movie>> loader) {
-                    mMovieAdapter.clear();
-                }
-            };
 
     private android.support.v4.app.LoaderManager.LoaderCallbacks<Cursor> mLoaderCursor =
             new LoaderManager.LoaderCallbacks<Cursor>() {
@@ -178,20 +154,15 @@ public class MainActivityFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
+        start();
         gridView = rootView.findViewById(R.id.movies_grid);
-        mMovieAdapter = new MovieAdapter(getActivity(), movieList);
-
-        /**if (savedInstanceState != null && (savedInstanceState.
-         getParcelableArrayList("MOVIE_DETAILS") != null)) {
-         movieList = savedInstanceState.getParcelableArrayList("MOVIE_DETAILS");
-         **/
-
-        gridView.setAdapter(mMovieAdapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int item, long l) {
+
+                //MovieList thisMovieList = mMovieAdapter.getItem(item);
                 Movie thisMovie = mMovieAdapter.getItem(item);
+
                 assert thisMovie != null;
                 String originalTitle = thisMovie.getmOriginalTitle();
                 String releaseDate = thisMovie.getmReleaseDate();
@@ -215,23 +186,19 @@ public class MainActivityFragment extends Fragment {
             movieList = savedInstanceState.getParcelableArrayList("MOVIE_DETAILS");
             switch (menuSelectionId) {
                 case R.id.top_rated:
-                    movieController.startTopRated();
-                    //movieDisplayStyleLink = MOVIE_DB_URL_TOP_RATED;
-                    //getLoaderManager().initLoader(0, null, mListMovieLoader);
+                    startTopRated();
                     break;
                 case R.id.favorites_id:
                     Log.i(LOG_TAG, "Menu selection id is " + menuSelectionId);
                     getActivity().getSupportLoaderManager().initLoader(LOADER_CURSOR_ID, null, mLoaderCursor);
                     break;
                 default:
-                    movieController.start();
-                    //movieDisplayStyleLink = DEFAULT_POPULAR_MOVIE_DB_URL;
-                    //getLoaderManager().initLoader(LOADER_ID, null, mListMovieLoader);
+                    start();
             }
-        }else {
-            movieController.start();
+        } else {
+            start();
+
             Log.i(LOG_TAG, "Movie controller is started for popular movies.");
-            //loaderManager.initLoader(LOADER_ID, null, mListMovieLoader);
         }
         return rootView;
 
@@ -258,12 +225,10 @@ public class MainActivityFragment extends Fragment {
             case R.id.most_popular:
                 menuItem = (MenuItem) menu.findItem(R.id.most_popular);
                 menuItem.setChecked(true);
-                movieController.start();
-                //movieDisplayStyleLink = DEFAULT_POPULAR_MOVIE_DB_URL;
-                //getLoaderManager().restartLoader(LOADER_ID, null, mListMovieLoader);
+                start();
                 break;
             case R.id.top_rated:
-                movieController.startTopRated();
+                startTopRated();
                 menuItem = (MenuItem) menu.findItem(R.id.top_rated);
                 menuItem.setChecked(true);
                 Log.i(LOG_TAG, "Top rated selection saved");
@@ -287,20 +252,15 @@ public class MainActivityFragment extends Fragment {
              return true;
              **/
             case R.id.top_rated:
-                movieController.startTopRated();
-               // movieDisplayStyleLink = MOVIE_DB_URL_TOP_RATED;
-                //getLoaderManager().restartLoader(0, null, mListMovieLoader);
+                startTopRated();
                 menuSelectionId = id;
                 Log.e(LOG_TAG, getString(R.string.log_top_rated_menu) + id);
                 break;
             case R.id.most_popular:
-                movieController.start();
-                //movieDisplayStyleLink = DEFAULT_POPULAR_MOVIE_DB_URL;
-                //getLoaderManager().restartLoader(LOADER_ID, null, mListMovieLoader);
+                start();
                 menuSelectionId = id;
                 break;
             case R.id.favorites_id:
-                // getLoaderManager().destroyLoader(LOADER_ID);
                 getActivity().getSupportLoaderManager().restartLoader(LOADER_CURSOR_ID, null, mLoaderCursor);
                 menuSelectionId = id;
                 Log.e(LOG_TAG, getString(R.string.favorites_chosen) + id);
@@ -318,6 +278,73 @@ public class MainActivityFragment extends Fragment {
         Toast.makeText(getContext(), "Database deleted: " + numDeleted + " items.", Toast.LENGTH_LONG).show();
 
     }
+
+    //excerpt from MovieController to test
+
+    public void start(){
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        MovieAPI movieAPI = retrofit.create(MovieAPI.class);
+
+        Call<MovieList> callPopular = movieAPI.loadPopularMovies(apiKey);
+        //Call<List<Movie>> callTopRate = movieAPI.loadPopularMovies("top_rated");
+        callPopular.enqueue(new Callback<MovieList>() {
+            @Override
+            public void onResponse(Call<MovieList> call, Response<MovieList> response) {
+                Log.i(LOG_TAG, "Popular movies call is started." + BASE_URL + "popular?api_key=" + apiKey);
+                mMovieList = response.body();
+                assert mMovieList != null;
+                movieList = mMovieList.getMovieList();
+                mMovieAdapter = new MovieAdapter(getActivity().getApplicationContext(), movieList);
+                gridView.setAdapter(mMovieAdapter);
+            }
+
+            @Override
+            public void onFailure(Call<MovieList> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+        //callTopRate.enqueue((retrofit2.Callback<List<Movie>>) this);
+    }
+
+    public void startTopRated(){
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        MovieAPI movieAPI = retrofit.create(MovieAPI.class);
+
+        Call<MovieList> callTopRate = movieAPI.loadTopRatedMovies(apiKey);
+        callTopRate.enqueue(new Callback<MovieList>() {
+            @Override
+            public void onResponse(Call<MovieList> call, Response<MovieList> response) {
+                Log.i(LOG_TAG, "Top rated movies call is started." + BASE_URL + "top_rated?api_key=" + apiKey);
+                mMovieList = response.body();
+                assert mMovieList != null;
+                movieList = mMovieList.getMovieList();
+                mMovieAdapter = new MovieAdapter(getActivity().getApplicationContext(), movieList);
+                gridView.setAdapter(mMovieAdapter);
+            }
+
+            @Override
+            public void onFailure(Call<MovieList> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
 
 }
 
