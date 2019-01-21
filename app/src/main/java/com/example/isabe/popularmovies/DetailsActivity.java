@@ -17,15 +17,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.isabe.popularmovies.adapters.MovieAdapter;
 import com.example.isabe.popularmovies.adapters.ReviewAdapter;
 import com.example.isabe.popularmovies.adapters.TrailerAdapter;
 import com.example.isabe.popularmovies.data.MovieContract.MovieEntry;
 import com.example.isabe.popularmovies.loaders.ReviewLoader;
 import com.example.isabe.popularmovies.loaders.TrailerLoader;
 import com.example.isabe.popularmovies.objects.Movie;
+import com.example.isabe.popularmovies.objects.MovieList;
 import com.example.isabe.popularmovies.objects.Review;
 import com.example.isabe.popularmovies.objects.Trailer;
+import com.example.isabe.popularmovies.objects.Trailers;
+import com.example.isabe.popularmovies.utilities.MovieAPI;
 import com.example.isabe.popularmovies.utilities.NetworkUtils;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 
 import java.net.URL;
@@ -35,6 +41,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+import static com.example.isabe.popularmovies.MainActivityFragment.BASE_URL;
 import static com.example.isabe.popularmovies.utilities.NetworkUtils.API_KEY_QUERY;
 import static com.example.isabe.popularmovies.utilities.NetworkUtils.apiKey;
 
@@ -56,6 +69,7 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
 
     private List<Review> movieReviews = new ArrayList<Review>();
     private List<Trailer> movieTrailers = new ArrayList<>();
+    private Trailers movieTrailersPOJO = new Trailers();
     private RecyclerView mRecyclerReviews;
     private RecyclerView mRecyclerTrailers;
     private TrailerAdapter mTrailerAdapter;
@@ -94,7 +108,7 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
                 }
             };
 
-    private android.support.v4.app.LoaderManager.LoaderCallbacks mListMovieTrailers =
+    /**private android.support.v4.app.LoaderManager.LoaderCallbacks mListMovieTrailers =
             new LoaderManager.LoaderCallbacks<List<Trailer>>() {
 
                 @Override
@@ -124,7 +138,7 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
                 }
             };
 
-
+     **/
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.details_movie);
@@ -290,11 +304,11 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
     }
 
     private void showTrailers() {
-        android.support.v4.app.LoaderManager loaderManager = getSupportLoaderManager();
-        loaderManager.initLoader(LOADER_VIDEO_ID, null, mListMovieTrailers);
-
-        movieTrailers = new ArrayList<>();
-        setupRecyclerTrailersView(mRecyclerTrailers);
+        startTrailer();
+        //android.support.v4.app.LoaderManager loaderManager = getSupportLoaderManager();
+        //loaderManager.initLoader(LOADER_VIDEO_ID, null, mListMovieTrailers);
+        //movieTrailers = new ArrayList<>();
+        //setupRecyclerTrailersView(mRecyclerTrailers);
     }
 
     private void setupRecyclerTrailersView(RecyclerView recyclerView) {
@@ -364,4 +378,40 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
     public void onItemClick(int position) {
     mPosition = position;
     }
+
+    public void startTrailer(){
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        MovieAPI movieAPI = retrofit.create(MovieAPI.class);
+
+        Call<Trailers> callTrailer = movieAPI.callTrailer(movieIdFromTMDB, apiKey);
+        //Call<List<Movie>> callTopRate = movieAPI.loadPopularMovies("top_rated");
+        callTrailer.enqueue(new Callback<Trailers>() {
+            @Override
+            public void onResponse(Call<Trailers> call, Response<Trailers> response) {
+                Log.i(LOG_TAG, "Movie trailer is started" + BASE_URL + movieIdFromTMDB + "/videos?api_key=" + apiKey);
+                movieTrailersPOJO = response.body();
+                assert movieTrailersPOJO != null;
+                movieTrailers = movieTrailersPOJO.getTrailers();
+
+               setupRecyclerTrailersView(mRecyclerTrailers);
+                //mTrailerAdapter = new TrailerAdapter(getApplicationContext(), movieTrailers);
+                //mRecyclerTrailers.setAdapter(mTrailerAdapter);
+                }
+
+            @Override
+            public void onFailure(Call<Trailers> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+        //callTopRate.enqueue((retrofit2.Callback<List<Movie>>) this);
+    }
+
 }

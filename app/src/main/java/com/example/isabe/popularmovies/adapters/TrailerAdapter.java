@@ -12,7 +12,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.isabe.popularmovies.R;
+import com.example.isabe.popularmovies.objects.Movie;
 import com.example.isabe.popularmovies.objects.Trailer;
+import com.example.isabe.popularmovies.objects.Trailers;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -26,6 +28,7 @@ import static com.example.isabe.popularmovies.DetailsActivity.YOUTUBE_LINK_VIDEO
 @SuppressWarnings("DefaultFileTemplate")
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHolder> {
     private List<Trailer> mMovieListTrailer;
+    private Trailers trailersPOJO = new Trailers();
     private String LOG_TAG = TrailerAdapter.class.getSimpleName();
 
     private Context mContext;
@@ -49,6 +52,12 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(TrailerAdapter.ViewHolder holder, final int position) {
+
+        assert trailersPOJO != null;
+        Log.i(LOG_TAG, "MovieTrailersObject is " + trailersPOJO.toString());
+
+        Log.i(LOG_TAG, "List of trailers is " + mMovieListTrailer.get(0).getmKeySearchVideo().toString());
+
         final Trailer trailer = mMovieListTrailer.get(position);
         String trailerImagePath = trailer.getmKeySearchImage();
 
@@ -56,7 +65,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHold
                 .load(trailerImagePath)
                 .placeholder(R.drawable.movie_icon)
                 .into(holder.mMovieTrailerImage);
-        Log.e(LOG_TAG, "Movie image loaded from YouTube.");
+        Log.e(LOG_TAG, "Movie image loaded from YouTube." + trailerImagePath.toString());
         holder.mPlayIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

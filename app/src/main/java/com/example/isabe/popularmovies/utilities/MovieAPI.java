@@ -3,6 +3,7 @@ package com.example.isabe.popularmovies.utilities;
 import com.example.isabe.popularmovies.objects.Movie;
 import com.example.isabe.popularmovies.objects.MovieList;
 import com.example.isabe.popularmovies.objects.Trailer;
+import com.example.isabe.popularmovies.objects.Trailers;
 
 import java.util.List;
 
@@ -20,6 +21,8 @@ public interface MovieAPI {
     Call<MovieList> loadTopRatedMovies(@Query("api_key") String apiKey);
 
     @GET("http://img.youtube.com/vi/{key}/0.jpg")
-    Call<List<Trailer>> loadTrailers(@Path("key") String string);
+    Call<List<Trailer>> loadTrailersImage(@Path("key") String string);
 
-    }
+    @GET("{id}/videos")
+    Call<Trailers> callTrailer(@Path("id") int intId,@Query("api_key") String string);
+}
