@@ -58,8 +58,11 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHold
 
         Log.i(LOG_TAG, "List of trailers is " + mMovieListTrailer.get(0).getmKeySearchVideo().toString());
 
-        final Trailer trailer = mMovieListTrailer.get(position);
-        String trailerImagePath = trailer.getmKeySearchImage();
+        Trailer trailer = mMovieListTrailer.get(position);
+        assert trailer != null;
+
+        String mYoutubeImageUrl = "http://img.youtube.com/vi/";
+        String trailerImagePath = mYoutubeImageUrl+trailer.getmKeySearchVideo()+ "/0.jpg";
 
         Picasso.get()
                 .load(trailerImagePath)

@@ -108,37 +108,6 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
                 }
             };
 
-    /**private android.support.v4.app.LoaderManager.LoaderCallbacks mListMovieTrailers =
-            new LoaderManager.LoaderCallbacks<List<Trailer>>() {
-
-                @Override
-                public Loader<List<Trailer>> onCreateLoader(int id, Bundle args) {
-                    Uri movieTrailerUri = Uri.parse(DEFAULT_REVIEW_MD_LINK).buildUpon()
-                            .appendPath(String.valueOf(movieIdFromTMDB))
-                            .appendPath("videos")
-                            .appendQueryParameter(API_KEY_QUERY, apiKey)
-                            .build();
-                    URL movieTrailerUrl = NetworkUtils.createUrl((movieTrailerUri).toString());
-
-                    return new TrailerLoader(DetailsActivity.this, (movieTrailerUrl).toString());
-                }
-
-                @Override
-                public void onLoadFinished(Loader<List<Trailer>> loader, List<Trailer> trailerList) {
-                    if (trailerList != null && !trailerList.isEmpty()) {
-                        movieTrailers.addAll(trailerList);
-                        setupRecyclerTrailersView(mRecyclerTrailers);
-                        Log.e(LOG_TAG, "Successful TrailerLoadFinished.");
-                    }
-                }
-
-                @Override
-                public void onLoaderReset(Loader<List<Trailer>> loader) {
-                    movieTrailers.clear();
-                }
-            };
-
-     **/
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.details_movie);
@@ -197,7 +166,7 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
             //trackFavorites();
         });
         showReview();
-        showTrailers();
+        startTrailer();
     }
 
     @Override
@@ -258,14 +227,6 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
         super.onResume();
         trackFavorites();
     }
-
-    /* public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-          mRecyclerReviews = (RecyclerView) inflater.inflate(
-                  R.layout.recycler_view_reviews_list, container, false);
-          setupRecyclerView(mRecyclerReviews);
-          return mRecyclerReviews;
-      }
-      */
     private void insertData() {
         String dateFormatted = convertDateFormat(mMovieDetails.getmReleaseDate());
 
@@ -301,14 +262,6 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
 
         movieReviews = new ArrayList<>();
         setupRecyclerView(mRecyclerReviews);
-    }
-
-    private void showTrailers() {
-        startTrailer();
-        //android.support.v4.app.LoaderManager loaderManager = getSupportLoaderManager();
-        //loaderManager.initLoader(LOADER_VIDEO_ID, null, mListMovieTrailers);
-        //movieTrailers = new ArrayList<>();
-        //setupRecyclerTrailersView(mRecyclerTrailers);
     }
 
     private void setupRecyclerTrailersView(RecyclerView recyclerView) {
@@ -392,26 +345,32 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
         MovieAPI movieAPI = retrofit.create(MovieAPI.class);
 
         Call<Trailers> callTrailer = movieAPI.callTrailer(movieIdFromTMDB, apiKey);
-        //Call<List<Movie>> callTopRate = movieAPI.loadPopularMovies("top_rated");
         callTrailer.enqueue(new Callback<Trailers>() {
             @Override
             public void onResponse(Call<Trailers> call, Response<Trailers> response) {
-                Log.i(LOG_TAG, "Movie trailer is started" + BASE_URL + movieIdFromTMDB + "/videos?api_key=" + apiKey);
+                Log.i(LOG_TAG, "Movie trailer is started " + BASE_URL + movieIdFromTMDB + "/videos?api_key=" + apiKey);
                 movieTrailersPOJO = response.body();
                 assert movieTrailersPOJO != null;
                 movieTrailers = movieTrailersPOJO.getTrailers();
+                Log.i(LOG_TAG, "Movie trailer image is " +
+                        movieTrailers.get(0).getmKeySearchImage());
 
-               setupRecyclerTrailersView(mRecyclerTrailers);
-                //mTrailerAdapter = new TrailerAdapter(getApplicationContext(), movieTrailers);
-                //mRecyclerTrailers.setAdapter(mTrailerAdapter);
-                }
+                TrailerAdapter mTrailerAdapter = new TrailerAdapter(DetailsActivity.this, movieTrailers);
+                mRecyclerTrailers = findViewById(R.id.trailer_movie);
+
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(DetailsActivity.this);
+                linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+                mRecyclerTrailers.setLayoutManager(linearLayoutManager);
+
+                mRecyclerTrailers.setAdapter(mTrailerAdapter);
+                mTrailerAdapter.setOnClick(DetailsActivity.this);
+            }
 
             @Override
             public void onFailure(Call<Trailers> call, Throwable t) {
                 t.printStackTrace();
             }
         });
-        //callTopRate.enqueue((retrofit2.Callback<List<Movie>>) this);
     }
 
 }
