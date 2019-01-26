@@ -26,6 +26,7 @@ import com.example.isabe.popularmovies.loaders.TrailerLoader;
 import com.example.isabe.popularmovies.objects.Movie;
 import com.example.isabe.popularmovies.objects.MovieList;
 import com.example.isabe.popularmovies.objects.Review;
+import com.example.isabe.popularmovies.objects.Reviews;
 import com.example.isabe.popularmovies.objects.Trailer;
 import com.example.isabe.popularmovies.objects.Trailers;
 import com.example.isabe.popularmovies.utilities.MovieAPI;
@@ -70,6 +71,7 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
     private List<Review> movieReviews = new ArrayList<Review>();
     private List<Trailer> movieTrailers = new ArrayList<>();
     private Trailers movieTrailersPOJO = new Trailers();
+    private Reviews movieReviewsPOJO = new Reviews();
     private RecyclerView mRecyclerReviews;
     private RecyclerView mRecyclerTrailers;
     private TrailerAdapter mTrailerAdapter;
@@ -165,7 +167,7 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
             }
             //trackFavorites();
         });
-        showReview();
+        provideReview();
         startTrailer();
     }
 
@@ -368,6 +370,46 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
 
             @Override
             public void onFailure(Call<Trailers> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    public void provideReview(){
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        MovieAPI movieAPI = retrofit.create(MovieAPI.class);
+
+        Call<Reviews> callReview = movieAPI.callReview(movieIdFromTMDB, apiKey);
+        callReview.enqueue(new Callback<Reviews>() {
+            @Override
+            public void onResponse(Call<Reviews> call, Response<Reviews> response) {
+                Log.i(LOG_TAG, "Movie review is presented " + BASE_URL + movieIdFromTMDB + "/reviews?api_key=" + apiKey);
+                movieReviewsPOJO = response.body();
+                assert movieReviewsPOJO != null;
+                movieReviews = movieReviewsPOJO.getReviewList();
+                Log.i(LOG_TAG, "Movie review url is " +
+                        movieReviews.get(0).getmReviewUrl());
+
+                ReviewAdapter  mReviewAdapter = new ReviewAdapter(DetailsActivity.this, movieReviews);
+                mRecyclerReviews = findViewById(R.id.review_content);
+
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(DetailsActivity.this);
+                linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+                mRecyclerReviews.setLayoutManager(linearLayoutManager);
+
+                mRecyclerReviews.setAdapter(mReviewAdapter);
+              }
+
+            @Override
+            public void onFailure(Call<Reviews> call, Throwable t) {
                 t.printStackTrace();
             }
         });

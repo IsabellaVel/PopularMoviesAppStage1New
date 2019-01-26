@@ -8,16 +8,31 @@
 
     <TextView
         android:id="@+id/review_author_layout"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp" />
+        android:layout_gravity="center_horizontal"
+        />
 
     <TextView
         android:id="@+id/review_content_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="fill_horizontal"
+        android:layout_margin="@dimen/review_small_margin"
         android:maxLines="5"
         android:textAppearance="?android:textAppearanceMedium"
-        android:textSize="12sp" />
+        android:textSize="@dimen/review_text_size" />
+
+    <TextView
+        android:id="@+id/review_url"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="fill_horizontal"
+        android:layout_marginTop="@dimen/margin_review_url"
+        android:layout_marginRight="@dimen/review_small_margin"
+        android:layout_marginLeft="@dimen/review_small_margin"
+        android:layout_gravity="center_horizontal"
+        android:autoLink="web"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:textSize="@dimen/review_text_size" />
 </LinearLayout>

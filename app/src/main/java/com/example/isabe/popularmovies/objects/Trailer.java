@@ -17,7 +17,6 @@ public class Trailer implements Parcelable {
     private String mTrailerSize;
     @SerializedName("site")
     private String mTrailerSite;
-    private String mYoutubeImageUrl = "http://img.youtube.com/vi/";
     @SerializedName("key")
     public String mKeySearchVideo;
 
@@ -61,6 +60,7 @@ public class Trailer implements Parcelable {
     }
 
     public String getmKeySearchImage() {
+        String mYoutubeImageUrl = "http://img.youtube.com/vi/";
         return mYoutubeImageUrl + mKeySearchVideo + "/0.jpg";
     }
 

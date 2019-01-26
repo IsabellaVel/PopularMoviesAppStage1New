@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.example.isabe.popularmovies.R;
 import com.example.isabe.popularmovies.objects.Review;
+import com.example.isabe.popularmovies.objects.Reviews;
 
 import java.util.List;
 
@@ -22,17 +23,20 @@ import java.util.List;
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder> {
     private Context mContext;
     private List<Review> mMovieListReviews;
+    private Reviews mReviewsPOJO = new Reviews();
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         private TextView mReviewAuthorTv;
         private TextView mReviewContentTv;
+        private TextView mReviewUrl;
 
         public ViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
             mReviewAuthorTv = itemView.findViewById(R.id.review_author_layout);
             mReviewContentTv = itemView.findViewById(R.id.review_content_layout);
+            mReviewUrl = itemView.findViewById(R.id.review_url);
         }
 
         @Override
@@ -54,10 +58,13 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(ReviewAdapter.ViewHolder holder, int position) {
+
         final Review review = mMovieListReviews.get(position);
+        assert review != null;
 
         holder.mReviewContentTv.setText(review.getmReviewContent());
         holder.mReviewAuthorTv.setText(review.getmReviewAuthor());
+        holder.mReviewUrl.setText(review.getmReviewUrl());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

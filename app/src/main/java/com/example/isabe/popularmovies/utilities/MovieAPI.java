@@ -2,6 +2,7 @@ package com.example.isabe.popularmovies.utilities;
 
 import com.example.isabe.popularmovies.objects.Movie;
 import com.example.isabe.popularmovies.objects.MovieList;
+import com.example.isabe.popularmovies.objects.Reviews;
 import com.example.isabe.popularmovies.objects.Trailer;
 import com.example.isabe.popularmovies.objects.Trailers;
 
@@ -25,4 +26,7 @@ public interface MovieAPI {
 
     @GET("{id}/videos")
     Call<Trailers> callTrailer(@Path("id") int intId,@Query("api_key") String string);
+
+    @GET("{id}/reviews")
+    Call<Reviews> callReview(@Path("id") int movieIdFromTMDB, @Query("api_key") String apiKey);
 }
