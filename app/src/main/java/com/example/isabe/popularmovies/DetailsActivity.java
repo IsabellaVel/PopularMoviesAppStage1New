@@ -395,9 +395,13 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
                 movieReviewsPOJO = response.body();
                 assert movieReviewsPOJO != null;
                 movieReviews = movieReviewsPOJO.getReviewList();
-                Log.i(LOG_TAG, "Movie review url is " +
-                        movieReviews.get(0).getmReviewUrl());
 
+                if(!movieReviews.isEmpty()) {
+                    Log.i(LOG_TAG, "Movie review url is " +
+                            movieReviews.get(0).getmReviewUrl());
+                }else{
+                    Log.i(LOG_TAG, "No movie review url.");
+                }
                 ReviewAdapter  mReviewAdapter = new ReviewAdapter(DetailsActivity.this, movieReviews);
                 mRecyclerReviews = findViewById(R.id.review_content);
 
