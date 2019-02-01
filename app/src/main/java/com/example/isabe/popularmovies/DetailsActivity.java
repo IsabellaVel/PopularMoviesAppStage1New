@@ -76,6 +76,7 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
     private RecyclerView mRecyclerTrailers;
     private TrailerAdapter mTrailerAdapter;
     private RecyclerView.Adapter mReviewAdapter;
+    private ImageView mShapeReview;
 
     private static final String DEFAULT_REVIEW_MD_LINK = "http://api.themoviedb.org/3/movie/";
     public static final String YOUTUBE_LINK_VIDEO = "https://www.youtube.com/watch?v=";
@@ -128,6 +129,7 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
         TextView mReleaseDate = findViewById(R.id.tv_releaseDate);
         TextView mSynopsis = findViewById(R.id.tv_movie_synopsis);
         TextView mVoteAverage = findViewById(R.id.tv_vote_average);
+        mShapeReview = findViewById(R.id.shape_review);
 
         mOriginalTitle.setText(mMovieDetails.getmOriginalTitle());
         mReleaseDate.setText(convertDateFormat(mMovieDetails.getmReleaseDate()));
@@ -401,6 +403,7 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
                             movieReviews.get(0).getmReviewUrl());
                 }else{
                     Log.i(LOG_TAG, "No movie review url.");
+                    mShapeReview.setVisibility(View.INVISIBLE);
                 }
                 ReviewAdapter  mReviewAdapter = new ReviewAdapter(DetailsActivity.this, movieReviews);
                 mRecyclerReviews = findViewById(R.id.review_content);

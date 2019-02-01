@@ -6,4 +6,5 @@
     <color name="colorSpacing">#E1BEE7</color>
     <color name="color_red_tint">#E53935</color>
     <color name="backdrop_bckgr">#b3e5fc</color>
+    <color name="shape_color">#42a5f5</color>
 </resources>

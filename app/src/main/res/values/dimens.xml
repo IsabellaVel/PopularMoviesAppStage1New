@@ -4,4 +4,6 @@
     <dimen name="review_text_size">12sp</dimen>
     <dimen name="margin_review_url">10dp</dimen>
     <dimen name="review_small_margin">4dp</dimen>
+    <dimen name="dimen_larger_image_bckgr">400dp</dimen>
+    <dimen name="margin_synopsis">10dp</dimen>
 </resources>

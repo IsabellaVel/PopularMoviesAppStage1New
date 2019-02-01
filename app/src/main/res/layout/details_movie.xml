@@ -11,7 +11,7 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="@dimen/dimen_larger_image_bckgr"
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Light">
 
@@ -26,7 +26,7 @@
             <ImageView
                 android:id="@+id/detail_backdrop_image"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/image_bckdr_height"
+                android:layout_height="@dimen/dimen_larger_image_bckgr"
                 android:scaleType="centerCrop"
                 android:fitsSystemWindows="true"
                 android:src="@drawable/movie_icon"
@@ -70,30 +70,42 @@
                 android:textColor="#000000"
                 android:textSize="24sp" />
 
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/shape"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:src="@drawable/tv_background"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
             <TextView
                 android:id="@+id/tv_movie_synopsis"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_margin="@dimen/margin_synopsis"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@+id/shape"
+                app:layout_constraintLeft_toLeftOf="@+id/shape"
+                app:layout_constraintRight_toRightOf="@+id/shape"
+                app:layout_constraintTop_toTopOf="@+id/shape"
                 android:text="@string/movie_summary" />
 
 
-            <TextView
-                android:id="@+id/divider"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_margin="4dp"
-                android:background="@color/colorAccent" />
+            </android.support.constraint.ConstraintLayout>
+
 
             <TextView
                 android:id="@+id/tv_vote_average"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:gravity="center_horizontal"
                 android:text="@string/vote_string"
                 android:textSize="16sp" />
 
@@ -144,17 +156,40 @@
                 android:id="@+id/reviews_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
+                android:layout_margin="10dp"
                 android:orientation="horizontal">
+
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/shape_review"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:src="@drawable/tv_background"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
 
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/review_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
                     android:maxLines="5"
                     android:textSize="12sp"
-                    tools:listitem="@layout/recycler_view_reviews_list" />
+                    tools:listitem="@layout/recycler_view_reviews_list"
+                    app:layout_constraintBottom_toBottomOf="@+id/shape_review"
+                    app:layout_constraintLeft_toLeftOf="@+id/shape_review"
+                    app:layout_constraintRight_toRightOf="@+id/shape_review"
+                    app:layout_constraintTop_toTopOf="@+id/shape_review"/>
+
+                </android.support.constraint.ConstraintLayout>
 
             </LinearLayout>
 
