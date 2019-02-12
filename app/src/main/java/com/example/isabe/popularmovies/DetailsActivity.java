@@ -129,7 +129,7 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
         TextView mReleaseDate = findViewById(R.id.tv_releaseDate);
         TextView mSynopsis = findViewById(R.id.tv_movie_synopsis);
         TextView mVoteAverage = findViewById(R.id.tv_vote_average);
-        mShapeReview = findViewById(R.id.shape_review);
+        //mShapeReview = findViewById(R.id.shape_review);
 
         mOriginalTitle.setText(mMovieDetails.getmOriginalTitle());
         mReleaseDate.setText(convertDateFormat(mMovieDetails.getmReleaseDate()));
@@ -403,8 +403,10 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
                             movieReviews.get(0).getmReviewUrl());
                 }else{
                     Log.i(LOG_TAG, "No movie review url.");
-                    mShapeReview.setVisibility(View.INVISIBLE);
-                }
+                    //mShapeReview.setVisibility(View.INVISIBLE);
+                    RecyclerView recyclerView = findViewById(R.id.review_content);
+                    recyclerView.setVisibility(View.INVISIBLE);
+                   }
                 ReviewAdapter  mReviewAdapter = new ReviewAdapter(DetailsActivity.this, movieReviews);
                 mRecyclerReviews = findViewById(R.id.review_content);
 

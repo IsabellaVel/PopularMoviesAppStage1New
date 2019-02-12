@@ -5,5 +5,7 @@
     <dimen name="margin_review_url">10dp</dimen>
     <dimen name="review_small_margin">4dp</dimen>
     <dimen name="dimen_larger_image_bckgr">400dp</dimen>
-    <dimen name="margin_synopsis">10dp</dimen>
+    <dimen name="margin_synopsis">12dp</dimen>
+    <dimen name="padding_dimen">8dp</dimen>
+    <dimen name="dimen_elevation">6dp</dimen>
 </resources>
